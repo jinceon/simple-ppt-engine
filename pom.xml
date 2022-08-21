@@ -20,6 +20,12 @@
             <classifier>jdk16</classifier>
         </dependency>
         <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-slides</artifactId>
+            <version>20.10</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.9.0</version>
