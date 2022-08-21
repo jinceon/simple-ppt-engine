@@ -5,6 +5,8 @@ but hope the way you use it is simple.
 ## quick-start 快速起步
 
 ```java
+import io.gitee.jinceon.core.DataSource;
+
 import java.util.HashMap;
 
 public class HelloPPT {
@@ -12,17 +14,22 @@ public class HelloPPT {
 
         // 1. create engine instance 创建引擎
         SimpleEngine engine = new SimpleEngine("hello-ppt.pptx");
-        
-        // 2. add data to context 填充数据
+
+        // 2. add data to dataSource 填充数据
+        DataSource dataSource = new DataSource();
         User user = new User("jinceon");
         Map props = new HashMap();
         props.put("key1", "value1");
         props.put("key2", "value2");
-        engine.addContext("user", user);
-        engine.addContext("props", props);
+        dataSource.setVariable("user", user);
+        dataSource.setVariable("props", props);
+        engine.setDataSource(dataSource);
 
         // 3. render data to template 将数据渲染到模板上
         engine.process();
+        
+        // 4. save result
+        engine.save("hello-ppt-renderd.pptx");
     }
 }
 ```
@@ -57,7 +64,7 @@ public class MyProcessor implements Processor {
     }
     
     @Override
-    public void process(Shape shape, Context context){
+    public void process(Shape shape, Context dataSource){
         shape.color = "#00FF00";
     }
 }

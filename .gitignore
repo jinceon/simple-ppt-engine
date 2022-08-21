@@ -30,3 +30,5 @@ bin/
 /.idea/
 /simple-ppt-engine.iml
 /target/
+/src/test/resources/gitignore/
+aspose-license.xml

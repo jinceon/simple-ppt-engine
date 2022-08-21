@@ -40,7 +40,7 @@ class MyPreProcessor implements Processor{
     }
 
     @Override
-    public void process(IShape shape, Context context) {
+    public void process(IShape shape, DataSource dataSource) {
 
     }
 }
@@ -54,7 +54,7 @@ class MyPostProcessor implements Processor{
     }
 
     @Override
-    public void process(IShape shape, Context context) {
+    public void process(IShape shape, DataSource dataSource) {
 
     }
 }

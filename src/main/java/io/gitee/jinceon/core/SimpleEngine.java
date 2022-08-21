@@ -5,15 +5,29 @@ import io.gitee.jinceon.processor.ChartProcessor;
 import io.gitee.jinceon.processor.PaginationProcessor;
 import io.gitee.jinceon.processor.TableProcessor;
 import io.gitee.jinceon.processor.TextProcessor;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 public class SimpleEngine {
     private boolean defaultProcessorsLoaded = false;
-    private final Map context = new HashMap();
     private final List<Processor> processors = new ArrayList<>();
+    private DataSource dataSource;
     private final Presentation presentation;
+
+    static {
+        License license = new License();
+        try {
+            InputStream  inputStream = new ClassPathResource("aspose-license.xml").getInputStream();
+            license.setLicense(inputStream);
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public SimpleEngine(String file){
         this.presentation = new Presentation(file);
@@ -23,8 +37,16 @@ public class SimpleEngine {
         this.presentation = new Presentation(is);
     }
 
-    public void addContext(String key, Object value){
-        this.context.put(key, value);
+    public void save(String outputFile){
+        this.presentation.save(outputFile, SaveFormat.Pptx);
+    }
+
+    public void save(OutputStream os){
+        this.presentation.save(os, SaveFormat.Pptx);
+    }
+
+    public void setDataSource(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
     private void loadProcessors(){
@@ -51,13 +73,14 @@ public class SimpleEngine {
         loadProcessors();
         ISlideCollection slides = presentation.getSlides();
         for(ISlide slide: slides.toArray()){
-            //notes in every slide 每一页的备注
-            INotesSlideManager notesSlideManager = slide.getNotesSlideManager();
-            ITextFrame notesTextFrame = notesSlideManager.getNotesSlide().getNotesTextFrame();
-
             IShapeCollection shapes = slide.getShapes();
             for(IShape shape: shapes.toArray()){
-
+                for(Processor processor: this.processors){
+                    if(processor.supports(shape)) {
+                        processor.process(shape, this.dataSource);
+                        break;
+                    }
+                }
             }
         }
     }
