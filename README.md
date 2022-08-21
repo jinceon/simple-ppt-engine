@@ -11,21 +11,18 @@ public class HelloPPT {
     public static void main(String[] args) {
 
         // 1. create engine instance 创建引擎
-        SimpleEngine engine = new SimpleEngine();
+        SimpleEngine engine = new SimpleEngine("hello-ppt.pptx");
         
-        // 2. load template 加载模板
-        Template template = new File("hello-ppt.pptx");
-
-        // 3. add data to context 填充数据
+        // 2. add data to context 填充数据
         User user = new User("jinceon");
         Map props = new HashMap();
         props.put("key1", "value1");
         props.put("key2", "value2");
         engine.addContext("user", user);
         engine.addContext("props", props);
-        
-        // 4. render data to template 将数据渲染到模板上
-        engine.process(template);
+
+        // 3. render data to template 将数据渲染到模板上
+        engine.process();
     }
 }
 ```
@@ -42,10 +39,10 @@ easily render a collection (such as List) to a Table.
 in fact we don't care about which kind of chart you actually use, we just manipulate the data table nested in the shape.  
 事实上我们不关心你用的是饼图、直方图还是什么别的，我们只操作内置在PPT里的表格数据。
 
-### Repeat 重复
+### Pagination 分页
 when there are so many rows in a List and can not display in only one slide,
-you can use `repeat` directive in slide note to define a pagination to split them to several slides.  
-当一个集合的数据很多一页PPT展示不完时，可以在ppt备注里使用`repeat`指令来设置分页，每页展示N行并自动分成若干页。
+you can use `#pagination` directive in slide note to define a pagination to split them to several slides.  
+当一个集合的数据很多一页PPT展示不完时，可以在ppt备注里使用`#pagination`指令来设置分页，每页展示N行并自动分成若干页。
 
 ### Define your own Processor 自定义处理器
 implements an interface `Processor` and set an order use `@Order`.  
