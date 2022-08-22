@@ -40,20 +40,20 @@ public class ChartProcessor implements Processor {
         int seriesRow = 0;
         int CategoriesColumn = 0;
         String[] categories = chart.getCategories();
-        for (int row = 1; row < categories.length; row++) {
-            chartDataWorkbook.getCell(workSheetIndex, row, CategoriesColumn).setValue(categories[row]);
+        for (int row = 0; row < categories.length; row++) {
+            chartDataWorkbook.getCell(workSheetIndex, row+1, CategoriesColumn).setValue(categories[row]);
         }
         ChartData.Pair[] series = chart.getSeries();
-        for (int col = 1; col < series.length; col++) {
-            chartDataWorkbook.getCell(workSheetIndex, seriesRow, col).setValue(series[col].getLabel());
+        for (int col = 0; col < series.length; col++) {
+            chartDataWorkbook.getCell(workSheetIndex, seriesRow, col+1).setValue(series[col].getLabel());
         }
         Object[][] data = chart.getData();
-        for (int row = 1; row < categories.length; row++) {
-            for (int col = 1; col < series.length; col++) {
-                chartDataWorkbook.getCell(workSheetIndex, row, col).setValue(data[row][col]);
+        for (int row = 0; row < categories.length; row++) {
+            for (int col = 0; col < series.length; col++) {
+                chartDataWorkbook.getCell(workSheetIndex, row+1, col+1).setValue(data[row][col]);
             }
         }
-        String newRange = String.format("Sheet1!$A$1:$%s$%d", number2Char(series.length), categories.length);
+        String newRange = String.format("Sheet1!$A$1:$%s$%d", number2Char(series.length) +1, categories.length +1);
         System.out.println("new range: " + newRange);
         chartData.setRange(newRange);
         IChartCellCollection cells = chartDataWorkbook.getCellCollection(chartData.getRange(), true);
