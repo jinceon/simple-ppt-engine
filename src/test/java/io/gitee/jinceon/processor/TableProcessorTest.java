@@ -39,12 +39,14 @@ class TableProcessorTest {
                     .physics(random.nextInt(100))
                     .build());
         }
-        TableData tableA = new TableData(header, TableData.Direction.HORIZONTAL);
+        TableData tableA = new TableData();
+        tableA.setDirection(TableData.Direction.HORIZONTAL);
         tableA.getOffset().setTop(1);
-        tableA.setData(scores);
-        TableData tableB = new TableData(header, TableData.Direction.VERTICAL);
+        tableA.setData(header, scores);
+        TableData tableB = new TableData();
         tableB.getOffset().setLeft(1);
-        tableB.setData(scores);
+        tableB.setDirection(TableData.Direction.VERTICAL);
+        tableB.setData(header, scores);
         dataSource.setVariable("tableA", tableA);
         dataSource.setVariable("tableB", tableB);
         engine.setDataSource(dataSource);

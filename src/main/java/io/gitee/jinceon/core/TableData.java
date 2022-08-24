@@ -32,6 +32,9 @@ public class TableData {
       x   1   1   x          ---> data = new Object[2][2]
       x   1   1   x                    = 1  1
       x   x   x   x                      1  1
+
+     we don't render headers in ui, since ui header may be grouped and have multiple rows/cols.
+     so you need make sure your header is prepared in template file.
      */
 
 
@@ -41,13 +44,7 @@ public class TableData {
     }
 
     private Direction direction = Direction.HORIZONTAL;
-    /**
-     * headers is necessary when retrieve value from  each item of List,
-     * if you set data with object[][], headers is unnecessary.
-     *
-     * we don't render headers in ui, since ui header may be grouped and have multiple rows/cols;
-     */
-    private Pair[] headers;
+
     /**
      * Object[row][col]
      */
@@ -64,30 +61,6 @@ public class TableData {
 
     private Offset offset = new Offset(0, 0, 0, 0);
 
-    public TableData() {
-    }
-
-    public TableData(Pair[] headers) {
-        this.headers = headers;
-    }
-
-    public TableData(Pair[] headers, Direction direction) {
-        this.direction = direction;
-        this.headers = headers;
-    }
-
-    public Pair[] getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Pair[] headers) {
-        this.headers = headers;
-    }
-
-    public void setHeaders(List<Pair> header) {
-        this.headers = header.toArray(new Pair[0]);
-    }
-
     public Object[][] getData() {
         return data;
     }
@@ -98,11 +71,18 @@ public class TableData {
         this.data = data;
     }
 
+    public void setData(List<Pair> headers, List list){
+        Assert.notEmpty(headers, "headers must not be empty");
+        Pair[] headersArray = headers.toArray(new Pair[0]);
+        setData(headersArray, list);
+    }
+
     /**
      * need rotate when direction is vertical
+     * @param headers tell how to retrieve data from item for each column
      * @param list
      */
-    public void setData(List list){
+    public void setData(Pair[] headers, List list){
         Assert.notEmpty(list, "list must not be empty");
         Assert.notEmpty(headers, "headers must not be empty");
         Assert.notNull(list.get(0), "at lease one item");
@@ -156,7 +136,9 @@ public class TableData {
         if(this.direction.equals(direction)){
             return;
         }
-        rotate();
+        if(this.data!=null) {
+            rotate();
+        }
         this.direction = direction;
     }
 
