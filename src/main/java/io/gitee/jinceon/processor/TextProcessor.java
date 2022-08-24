@@ -11,7 +11,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 public class TextProcessor implements Processor {
     @Override
     public boolean supports(IShape shape) {
-        return shape instanceof ITextFrame || shape instanceof IAutoShape;
+        return shape instanceof IAutoShape;
     }
 
     @Override

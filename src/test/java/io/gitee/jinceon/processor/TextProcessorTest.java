@@ -13,6 +13,6 @@ class TextProcessorTest {
         dataSource.setVariable("title", "jinceon");
         engine.setDataSource(dataSource);
         engine.process();
-        engine.save("src/test/resources/gitignore/text-rendered.pptx");
+        engine.save("src/test/resources/test-text.pptx");
     }
 }
