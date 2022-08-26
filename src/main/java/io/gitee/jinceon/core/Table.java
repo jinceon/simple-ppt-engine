@@ -1,6 +1,11 @@
 package io.gitee.jinceon.core;
 
+import io.gitee.jinceon.utils.MatrixUtil;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 /**
  <pre>
@@ -57,8 +62,43 @@ public class Table {
         this.data = data;
     }
 
+    /**
+     *
+     * @param headers
+     * @param list
+     * @param direction
+     */
     public void setData(String[] headers, List list, Direction direction){
+        this.data = new Object[list.size()][headers.length];
+        Field[] fields = new Field[0];
+        if(!(list.get(0) instanceof Map)){
+            Object o = list.get(0);
+            fields = new Field[headers.length];
+            for(int i = 0;i<headers.length; i++) {
+                Field field = ReflectionUtils.findField(o.getClass(), headers[i]);
+                field.setAccessible(true);
+                fields[i] = field;
+            }
+        }
 
+        for (int row = 0; row < list.size(); row++) {
+            Object src = list.get(row);
+            Object[] target = this.data[row];
+            for (int col = 0; col < headers.length; col++) {
+                if(src instanceof Map map) {
+                    target[col] = map.get(headers[col]);
+                }else {
+                    try {
+                        target[col] = fields[col].get(src);
+                    } catch (IllegalAccessException e) {
+                        throw new UnsupportedOperationException(e);
+                    }
+                }
+            }
+        }
+        if(Direction.VERTICAL.equals(direction)){
+            MatrixUtil.rowColumnTransform(this.data);
+        }
     }
 
     public void merge(Position position, Table table){
@@ -68,6 +108,7 @@ public class Table {
     public void merge(Position position, Object[][] data){
 
     }
+
 
     public enum Position {
         LEFT,

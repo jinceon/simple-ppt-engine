@@ -3,13 +3,10 @@ package io.gitee.jinceon.processor;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Pair;
 import io.gitee.jinceon.core.SimpleEngine;
-import io.gitee.jinceon.core.TableData;
+import io.gitee.jinceon.core.Table;
 import io.gitee.jinceon.processor.data.Score;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -39,16 +36,17 @@ class TableProcessorTest {
                     .physics(random.nextInt(100))
                     .build());
         }
-        TableData tableA = new TableData();
-        tableA.setDirection(TableData.Direction.HORIZONTAL);
-        tableA.getOffset().setTop(1);
-        tableA.setData(header, scores);
-        TableData tableB = new TableData();
-        tableB.getOffset().setLeft(1);
-        tableB.setDirection(TableData.Direction.VERTICAL);
-        tableB.setData(header, scores);
+        String[] headers = new String[]{"name", "chinese", "math", "english", "physics", "chemistry"};
+        Table tableA = new Table();
+        tableA.setData(headers, scores, Table.Direction.HORIZONTAL);
+        tableA.merge(Table.Position.TOP, new Object[1][1]);
         dataSource.setVariable("tableA", tableA);
+
+        Table tableB = new Table();
+        tableB.setData(headers, scores, Table.Direction.VERTICAL);
+        tableA.merge(Table.Position.LEFT, new Object[1][1]);
         dataSource.setVariable("tableB", tableB);
+
         engine.setDataSource(dataSource);
         engine.process();
         engine.save("src/test/resources/test-table.pptx");
