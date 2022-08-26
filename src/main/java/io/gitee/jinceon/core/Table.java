@@ -109,6 +109,10 @@ public class Table {
 
     }
 
+    public Object[][] getData() {
+        return this.data;
+    }
+
 
     public enum Position {
         LEFT,

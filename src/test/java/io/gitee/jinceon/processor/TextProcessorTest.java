@@ -10,7 +10,7 @@ class TextProcessorTest {
     void process() {
         SimpleEngine engine = new SimpleEngine("src/test/resources/text.pptx");
         DataSource dataSource = new DataSource();
-        dataSource.setVariable("title", "jinceon");
+        dataSource.setVariable("name", "jinceon");
         engine.setDataSource(dataSource);
         engine.process();
         engine.save("src/test/resources/test-text.pptx");

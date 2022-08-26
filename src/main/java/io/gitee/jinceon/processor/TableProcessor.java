@@ -2,6 +2,7 @@ package io.gitee.jinceon.processor;
 
 import com.aspose.slides.*;
 import io.gitee.jinceon.core.*;
+import io.gitee.jinceon.core.Table;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
@@ -19,7 +20,7 @@ public class TableProcessor implements Processor {
         // PowerPoint only has AlternativeText
         String spel = shape.getAlternativeText();
         SpelExpressionParser parser = new SpelExpressionParser();
-        TableData table = (TableData) parser.parseExpression(spel,
+        Table table = (Table) parser.parseExpression(spel,
                 new TemplateParserContext()).getValue(dataSource.getEvaluationContext());
         if (table == null) {
             return;
@@ -27,10 +28,9 @@ public class TableProcessor implements Processor {
         System.out.println("spel: " + spel + ", table: " + table);
         int dataRowCountOfUI = iTable.getRows().size();
         int dataColCountOfUI = iTable.getColumns().size();
-        TableData.Offset offset = table.getOffset();
         Object[][] tableData = table.getData();
-        int rowCountOfData = tableData.length + offset.getTop() + offset.getBottom();
-        int colCountOfData = tableData[0].length + offset.getLeft() + offset.getRight();
+        int rowCountOfData = tableData.length;
+        int colCountOfData = tableData[0].length;
 
         if (rowCountOfData > dataRowCountOfUI || colCountOfData > dataColCountOfUI) {
             throw new IllegalArgumentException(String.format("ui size is only %d*%d, actually need %d*%d, too small to fill in",
@@ -49,10 +49,10 @@ public class TableProcessor implements Processor {
         }
 
         for (int row = 0; row < tableData.length; row++) {
-            IRow iRow = rows.get_Item(row + offset.getTop());
+            IRow iRow = rows.get_Item(row);
             System.out.printf("%d \t", row);
             for (int col = 0; col < tableData[row].length; col++) {
-                ICell cell = iRow.get_Item(col + offset.getLeft());
+                ICell cell = iRow.get_Item(col);
                 System.out.printf("'%s'\t", tableData[row][col]);
                 cell.getTextFrame().setText(String.valueOf(tableData[row][col]));
             }

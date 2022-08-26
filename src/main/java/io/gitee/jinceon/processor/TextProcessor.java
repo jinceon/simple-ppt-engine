@@ -29,6 +29,7 @@ public class TextProcessor implements Processor {
             for (int j = 0; j < portions.getCount(); j++) {
                 IPortion portion = portions.get_Item(j);
                 String spel = portion.getText();
+                System.out.println("spel: " + spel);
                 SpelExpressionParser parser = new SpelExpressionParser();
                 String text = String.valueOf(parser.parseExpression(spel, new TemplateParserContext()).getValue(dataSource.getEvaluationContext()));
                 System.out.println("spel: " + spel + ", text: " + text);
