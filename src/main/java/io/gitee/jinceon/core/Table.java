@@ -1,7 +1,10 @@
 package io.gitee.jinceon.core;
+
+import java.util.List;
+
 /**
  <pre>
- simple table with only data
+ basic table
  Table t = new Table(new Object[2][5]);
 
  1  1  1  1  1        → row
@@ -11,15 +14,14 @@ package io.gitee.jinceon.core;
  ------------------------------------------------------------
  table with header in the top
  Table t = new Table(new Object[2][5]);
- Table tableWithHeader = new Decorator(t, Decorator.TOP)
-
+ t.merge(Position.TOP, new Table(new Object[1][5]));
  a  b  c  d  e
  1  1  1  1  1
  2  2  2  2  2
  ------------------------------------------------------------
  table with header in the left
  Table t = new Table(new Object[3][4]);
- Table tableWithHeader = new Decorator(t, Decorator.LEFT)
+ t.merge(Position.LEFT, new Object[3][1]))
 
  a  1  2  3  4
  b  1  2  3  4
@@ -27,8 +29,8 @@ package io.gitee.jinceon.core;
  ------------------------------------------------------------
  table with header in the left, and then another header in the top
  Table t = new Table(new Object[3][4]);
- Table t1 = new Decorator(t, Decorator.LEFT)
- Table t2 = new Decorator(t1, Decorator.TOP)
+ t.merge(Position.LEFT, new Table(new Object[3][1])))
+ t.merge(Position.TOP, new Table(new Object[1][5])))
 
  A  B  C  D  E
  a  1  2  3  4
@@ -37,8 +39,8 @@ package io.gitee.jinceon.core;
  ------------------------------------------------------------
  table with header in the top, and then another header in the left
  Table t = new Table(new Object[3][4]);
- Table t1 = new Decorator(t, Decorator.TOP)
- Table t2 = new Decorator(t1, Decorator.LEFT)
+ t.merge(Position.TOP, new Table(new Object[1][4])))
+ t.merge(Position.LEFT, new Table(new Object[4][1])))
 
  a  A  B  C  D
  b  1  2  3  4
@@ -48,10 +50,33 @@ package io.gitee.jinceon.core;
  */
 public class Table {
 
-    public static class Body {
+    private Object[][] data;
+
+    public Table(){}
+    public Table(Object[][] data){
+        this.data = data;
+    }
+
+    public void setData(String[] headers, List list, Direction direction){
 
     }
-    public abstract static class Decorator{
 
+    public void merge(Position position, Table table){
+        merge(position, table.data);
+    }
+
+    public void merge(Position position, Object[][] data){
+
+    }
+
+    public enum Position {
+        LEFT,
+        TOP,
+        RIGHT,
+        BOTTOM
+    }
+    public enum Direction {
+        HORIZONTAL,
+        VERTICAL
     }
 }
