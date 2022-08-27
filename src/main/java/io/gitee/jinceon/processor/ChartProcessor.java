@@ -2,7 +2,7 @@ package io.gitee.jinceon.processor;
 
 import com.aspose.slides.*;
 import io.gitee.jinceon.core.*;
-import io.gitee.jinceon.core.ChartData;
+import io.gitee.jinceon.core.Chart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -22,7 +22,7 @@ public class ChartProcessor implements Processor {
         // PowerPoint only has AlternativeText
         String spel = shape.getAlternativeText();
         SpelExpressionParser parser = new SpelExpressionParser();
-        ChartData chart = (ChartData) parser.parseExpression(spel,
+        Chart chart = (Chart) parser.parseExpression(spel,
                 new TemplateParserContext()).getValue(dataSource.getEvaluationContext());
         log.debug("spel: {}, chart: {}", spel, chart);
         if(chart == null){
@@ -38,7 +38,7 @@ public class ChartProcessor implements Processor {
         for (int row = 0; row < categories.length; row++) {
             chartDataWorkbook.getCell(workSheetIndex, row+1, CategoriesColumn).setValue(categories[row]);
         }
-        Pair[] series = chart.getSeries();
+        Chart.Pair[] series = chart.getSeries();
         for (int col = 0; col < series.length; col++) {
             chartDataWorkbook.getCell(workSheetIndex, seriesRow, col+1).setValue(series[col].getLabel());
         }

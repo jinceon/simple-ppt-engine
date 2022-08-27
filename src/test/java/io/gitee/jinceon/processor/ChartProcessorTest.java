@@ -1,8 +1,8 @@
 package io.gitee.jinceon.processor;
 
-import io.gitee.jinceon.core.ChartData;
+import io.gitee.jinceon.core.Chart;
+import io.gitee.jinceon.core.Chart.Pair;
 import io.gitee.jinceon.core.DataSource;
-import io.gitee.jinceon.core.Pair;
 import io.gitee.jinceon.core.SimpleEngine;
 import io.gitee.jinceon.processor.data.AgeCount;
 import io.gitee.jinceon.processor.data.Sales;
@@ -32,7 +32,7 @@ class ChartProcessorTest {
                 new Pair("年龄区间", "ageRange"),
                 new Pair("数量", "count")
         };
-        ChartData chart = new ChartData(categories, series);
+        Chart chart = new Chart(categories, series);
         chart.setData(counts);
         dataSource.setVariable("chartA", chart);
         engine.setDataSource(dataSource);
@@ -62,7 +62,7 @@ class ChartProcessorTest {
                 new Pair("语文", "chinese"),
                 new Pair("英语", "english")
         };
-        ChartData chart = new ChartData(categories, series);
+        Chart chart = new Chart(categories, series);
         chart.setData(scores);
         dataSource.setVariable("chartB", chart);
         engine.setDataSource(dataSource);
@@ -87,7 +87,7 @@ class ChartProcessorTest {
                 new Pair("服饰", "cloth"),
                 new Pair("饮料", "drink")
         };
-        ChartData chart = new ChartData(categories, series);
+        Chart chart = new Chart(categories, series);
         chart.setData(counts);
         dataSource.setVariable("chartC", chart);
         engine.setDataSource(dataSource);

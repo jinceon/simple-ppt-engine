@@ -1,5 +1,7 @@
 package io.gitee.jinceon.core;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.ToString;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @ToString
-public class ChartData {
+public class Chart {
 
     /*
          A      B     C      D
@@ -27,11 +29,11 @@ public class ChartData {
      */
     private Object[][] data;
 
-    public ChartData() {
+    public Chart() {
 
     }
 
-    public ChartData(String[] categories, Pair[] series) {
+    public Chart(String[] categories, Pair[] series) {
         this.categories = categories;
         this.series = series;
     }
@@ -108,6 +110,12 @@ public class ChartData {
             }
         }
 
+    }
+    @Data
+    @AllArgsConstructor
+    public static class Pair {
+        private String label; // for display
+        private String prop;  // for value
     }
 
 }
