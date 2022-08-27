@@ -16,42 +16,68 @@ data[0] = new int[]{1,1,1,1,1};
 data[1] = new int[]{2,2,2,2,2}; 
 Table t = new Table(data);
 // 当然，直接操作数组会很繁琐。更实际的例子一般是从数据库（或其他数据源）查出一个List。
-List<User> users = new ArrayList<>();
-
+List<User> users = findUsers();
+class User {
+    String name;
+    String phone;
+    String address;
+}
+String[] header = new String[]{ "name", "address", "phone"};
+// 将 User 映射到 Object[] 的时候，用 header 来控制顺序
+// Object[0] = user.name
+// Object[1] = user.address
+// Object[2] = user.phone
 ```
 
+## Table with Headers 带表头（标题）的表格  
 
- ------------------------------------------------------------
- table with header in the top
+ table with header in the top  表头在表格顶部 
+```java
  Table t = new Table(new Object[2][5]);
- t.merge(Position.TOP, new Table(new Object[1][5]));
+ Object[][] header = new Object[][]{"a","b","c","d","e"}; // Object[1][5]
+ t.merge(Position.TOP, header);
+```
+<pre>
  a  b  c  d  e
  1  1  1  1  1
  2  2  2  2  2
+</pre>
  ------------------------------------------------------------
- table with header in the left
+ table with header in the left  表头在表格左侧  
+```java
  Table t = new Table(new Object[3][4]);
- t.merge(Position.LEFT, new Object[3][1]))
-
+ Object[][] header = new Object[][]{ {"a"},{"b"},{"c"}};// Object[3][1]
+ t.merge(Position.LEFT, header);
+```
+<pre>
  a  1  2  3  4
  b  1  2  3  4
  c  1  2  3  4
+</pre>
  ------------------------------------------------------------
- table with header in the left, and then another header in the top
+ table with header in the left, and then another header in the top  
+ 先加一个左侧的表头，再在顶部加一个表头  
+```java
  Table t = new Table(new Object[3][4]);
- t.merge(Position.LEFT, new Table(new Object[3][1])))
- t.merge(Position.TOP, new Table(new Object[1][5])))
-
+ t.merge(Position.LEFT, new Object[3][1]);
+ t.merge(Position.TOP, new Object[1][5]);
+```
+<pre>
  A  B  C  D  E
  a  1  2  3  4
  b  1  2  3  4
  c  1  2  3  4
+</pre>
  ------------------------------------------------------------
- table with header in the top, and then another header in the left
+ table with header in the top, and then another header in the left  
+ 先在顶部加一个表头，再在左侧加一个表头  
+```java
  Table t = new Table(new Object[3][4]);
- t.merge(Position.TOP, new Table(new Object[1][4])))
- t.merge(Position.LEFT, new Table(new Object[4][1])))
+ t.merge(Position.TOP, new Object[1][4])
+ t.merge(Position.LEFT, new Object[4][1])
+```
 
+<pre>
  a  A  B  C  D
  b  1  2  3  4
  c  1  2  3  4
