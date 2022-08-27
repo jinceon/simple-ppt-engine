@@ -38,13 +38,18 @@ public class HelloPPT {
 the style will be unchanged after replacing data to variables.   
 变量替换成数据后，会保留渲染前变量的样式。
 
+[Text Documentation](docs/processor/Text.md)
 ### Table 表格
 easily render a collection (such as List) to a Table.  
 便捷地将一个集合（如List）填充到表格上。
 
+[Table Documentation](docs/processor/Table.md)
+
 ### Chart 图表
 in fact we don't care about which kind of chart you actually use, we just manipulate the data table nested in the shape.  
 事实上我们不关心你用的是饼图、直方图还是什么别的，我们只操作内置在PPT里的表格数据。
+
+[Chart Documentation](docs/processor/Chart.md)
 
 ### Pagination 分页
 when there are so many rows in a List and can not display in only one slide,
