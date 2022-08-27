@@ -33,7 +33,13 @@ public class HelloPPT {
     }
 }
 ```
-## showcase 功能演示
+## Design Introduction 设计思路
+[Introduction](docs/INTRODUCTION.md)
+
+## Data和UI绑定
+[Data和UI绑定](docs/BindData.md);
+
+## ShowCase 功能演示
 ### Text Style 文本样式
 the style will be unchanged after replacing data to variables.   
 变量替换成数据后，会保留渲染前变量的样式。

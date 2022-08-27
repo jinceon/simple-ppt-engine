@@ -1,9 +1,13 @@
 # Table 表格
+## Requirements 前置条件
+[Data和UI绑定](../BindData.md)
+
+## Example 示例
 表格的核心是二维数组。  
 因此填充数据的时候，只需要将一个二维数组按从上到下、从左到右的顺序依次填充即可。  
 但是表格往往有表头标题栏（可能还有多行的、带分组的标题表头）、底部汇总栏等。
 为了让构造二维数组的时候更方便，我们在表格的类实现上做了一些设计。
-## Basic Table 基础表格
+### Basic Table 基础表格
 ```
  1  1  1  1  1        → row
  2  2  2  2  2
@@ -27,9 +31,11 @@ String[] header = new String[]{ "name", "address", "phone"};
 // Object[0] = user.name
 // Object[1] = user.address
 // Object[2] = user.phone
+Table t1 = new Table();
+t1.setData(header, users);
 ```
 
-## Table with Headers 带表头（标题）的表格  
+### Table with Headers 带表头（标题）的表格  
 
  table with header in the top  表头在表格顶部 
 ```java
@@ -83,3 +89,6 @@ String[] header = new String[]{ "name", "address", "phone"};
  c  1  2  3  4
  d  1  2  3  4
  </pre>
+
+### 复杂表格
+其他的复杂表格，如多行表头、分组、底部带有合计汇总等，将表格合理拆分后，用merge方法合并成一个大表格即可。
