@@ -63,12 +63,11 @@ public class Table {
     }
 
     /**
-     *
-     * @param headers
-     * @param list
-     * @param direction
+     * 将一个 List<Entity> 转换为 Object[][], 其中 Entity/Map 转成 Object[] 的时候按headers的顺序
+     * @param headers iterate properties(keys) of entity(map) to Object[] in specified order
+     * @param list to be converted to Object[][]
      */
-    public void setData(String[] headers, List list, Direction direction){
+    public void setData(String[] headers, List list) {
         this.data = new Object[list.size()][headers.length];
         Field[] fields = new Field[0];
         if(!(list.get(0) instanceof Map)){
@@ -96,32 +95,126 @@ public class Table {
                 }
             }
         }
+    }
+
+    /**
+     * 将一个 List<Entity> 转换为 Object[][], 其中 Entity/Map 转成 Object[] 的时候按headers的顺序
+     * @param headers iterate properties(keys) of entity(map) to Object[] in specified order
+     * @param list to be converted to Object[][]
+     * @param direction HORIZONTAL, VERTICAL
+     */
+    public void setData(String[] headers, List list, Direction direction){
+        setData(headers, list);
         if(Direction.VERTICAL.equals(direction)){
-            MatrixUtil.rowColumnTransform(this.data);
+            this.data = MatrixUtil.rowColumnTransform(this.data);
         }
     }
 
+    /**
+     * merge another table into current table
+     * @param position
+     * @param table
+     */
     public void merge(Position position, Table table){
-        merge(position, table.data);
+        int row = 0, col = 0;
+        switch (position){
+            case TOP:
+            case BOTTOM:
+                row = this.getRowCount()+table.getRowCount();
+                col = Math.max(this.getColumnCount(), table.getColumnCount());
+                break;
+            case LEFT:
+            case RIGHT:
+                row = Math.max(this.getRowCount(), table.getRowCount());
+                col = this.getColumnCount() + table.getColumnCount();
+        }
+        Object[][] newTable = new Object[row][col];
+        switch (position) {
+            case LEFT -> {
+                for (int r = 0; r < table.getRowCount(); r++) {
+                    System.arraycopy(table.getData()[r], 0, newTable[r], 0, table.getColumnCount());
+                }
+                int offset = table.getColumnCount();
+                for (int r = 0; r < this.getRowCount(); r++) {
+                    System.arraycopy(this.data[r], 0, newTable[r], offset, this.getColumnCount());
+                }
+            }
+            case RIGHT -> {
+                for (int r = 0; r < this.getRowCount(); r++) {
+                    System.arraycopy(this.data[r], 0, newTable[r], 0, this.getColumnCount());
+                }
+                int offset = this.getColumnCount();
+                for (int r = 0; r < table.getRowCount(); r++) {
+                    System.arraycopy(table.getData()[r], 0, newTable[r], offset, table.getColumnCount());
+                }
+            }
+            case TOP -> {
+                for (int r = 0; r < table.getRowCount(); r++) {
+                    System.arraycopy(table.getData()[r], 0, newTable[r], 0, table.getColumnCount());
+                }
+                int offset = table.getRowCount();
+                for (int r = 0; r < this.getRowCount(); r++) {
+                    System.arraycopy(this.data[r], 0, newTable[r + offset], 0, this.getColumnCount());
+                }
+            }
+            case BOTTOM -> {
+                for (int r = 0; r < this.getRowCount(); r++) {
+                    System.arraycopy(this.data[r], 0, newTable[r], 0, this.getColumnCount());
+                }
+                int offset = this.getRowCount();
+                for (int r = 0; r < this.getRowCount(); r++) {
+                    System.arraycopy(table.getData()[r], 0, newTable[r + offset], 0, table.getColumnCount());
+                }
+            }
+        }
+        this.data = newTable;
     }
 
+    /**
+     * merge another Object[][] into current table
+     * @param position
+     * @param data
+     */
     public void merge(Position position, Object[][] data){
-
+        merge(position, new Table(data));
     }
 
     public Object[][] getData() {
         return this.data;
     }
 
+    public int getRowCount(){
+        return this.data.length;
+    }
 
+    public int getColumnCount(){
+        return this.data[0].length;
+    }
+    /**
+     * relative position when merging two table
+     * 当合并2个表格的时候，它们的相对位置
+     */
     public enum Position {
         LEFT,
         TOP,
         RIGHT,
         BOTTOM
     }
+
+    /**
+     * the direction of row
+     * 行的方向
+     */
     public enum Direction {
+        /**
+         * 从左到右
+         * from left to right
+         */
         HORIZONTAL,
+        /**
+         * 从上到下
+         * from top to bottom
+         */
         VERTICAL
     }
 }

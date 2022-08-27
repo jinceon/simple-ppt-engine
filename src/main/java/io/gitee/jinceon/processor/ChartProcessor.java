@@ -3,10 +3,12 @@ package io.gitee.jinceon.processor;
 import com.aspose.slides.*;
 import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.ChartData;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @Order(70)
+@Slf4j
 public class ChartProcessor implements Processor {
     @Override
     public boolean supports(IShape shape) {
@@ -16,20 +18,19 @@ public class ChartProcessor implements Processor {
     @Override
     public void process(IShape shape, DataSource dataSource) {
         IChart iChart = (IChart) shape;
-        System.out.println("shape--begin");
         // wps has AlternativeTextTitle and AlternativeText
         // PowerPoint only has AlternativeText
         String spel = shape.getAlternativeText();
         SpelExpressionParser parser = new SpelExpressionParser();
         ChartData chart = (ChartData) parser.parseExpression(spel,
                 new TemplateParserContext()).getValue(dataSource.getEvaluationContext());
+        log.debug("spel: {}, chart: {}", spel, chart);
         if(chart == null){
             return;
         }
-        System.out.println("spel: " + spel + ", chart: " + chart);
         IChartData chartData = iChart.getChartData();
         IChartDataWorkbook chartDataWorkbook = chartData.getChartDataWorkbook();
-        System.out.println("template range:" + chartData.getRange());
+        log.debug("spel : {}, template range: {}", spel, chartData.getRange());
         int workSheetIndex = 0;
         int seriesRow = 0;
         int CategoriesColumn = 0;
@@ -48,10 +49,10 @@ public class ChartProcessor implements Processor {
             }
         }
         String newRange = String.format("Sheet1!$A$1:$%s$%d", number2Char(series.length) +1, categories.length +1);
-        System.out.println("new range: " + newRange);
+        log.debug("spel: {}, new range: {}",spel, newRange);
         chartData.setRange(newRange);
         IChartCellCollection cells = chartDataWorkbook.getCellCollection(chartData.getRange(), true);
-        cells.forEach(iChartDataCell -> System.out.printf("cell: row=%d col=%d value=%s %n", iChartDataCell.getRow(), iChartDataCell.getColumn(), iChartDataCell.getValue()));
+        cells.forEach(iChartDataCell -> log.debug("cell: row={} col={} value={}", iChartDataCell.getRow(), iChartDataCell.getColumn(), iChartDataCell.getValue()));
     }
 
     /**

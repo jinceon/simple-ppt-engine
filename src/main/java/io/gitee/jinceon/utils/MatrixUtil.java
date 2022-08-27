@@ -1,5 +1,10 @@
 package io.gitee.jinceon.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.StringWriter;
+
+@Slf4j
 public class MatrixUtil {
 
     /**
@@ -10,7 +15,7 @@ public class MatrixUtil {
      *
      */
     public static Object[][] rowColumnTransform(Object[][] matrix){
-        print(matrix);
+        log.debug("before rowColumnTransform: {}", visual(matrix));
         int rows = matrix.length;
         int cols = matrix[0].length;
         Object[][] temp = new Object[cols][rows];
@@ -19,7 +24,7 @@ public class MatrixUtil {
                 temp[col][row] = matrix[row][col];
             }
         }
-        print(temp);
+        log.debug("after rowColumnTransform: {}", visual(temp));
         return temp;
     }
 
@@ -27,17 +32,18 @@ public class MatrixUtil {
      * print matrix in the console
      * @param matrix
      */
-    public static void print(Object[][] matrix){
-        System.out.println("start print matrix:");
+    public static String visual(Object[][] matrix){
         int rows = matrix.length;
         int cols = matrix[0].length;
+        StringWriter sw = new StringWriter();
+        sw.append(String.format("matrix size = %d x %d \n", rows, cols));
         for(int row=0;row<rows;row++){
-            System.out.printf("%d \t", row);
+            sw.append(String.format("%d \t", row));
             for(int col=0;col<cols;col++){
-                System.out.printf("%s \t", matrix[row][col]);
+                sw.append(String.format("%s \t", matrix[row][col]));
             }
-            System.out.println();
+            sw.append("\n");
         }
-        System.out.println("finish");
+        return sw.toString();
     }
 }

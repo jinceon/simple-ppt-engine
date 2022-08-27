@@ -4,10 +4,12 @@ import com.aspose.slides.*;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.Processor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @Order(90)
+@Slf4j
 public class TextProcessor implements Processor {
     @Override
     public boolean supports(IShape shape) {
@@ -29,10 +31,10 @@ public class TextProcessor implements Processor {
             for (int j = 0; j < portions.getCount(); j++) {
                 IPortion portion = portions.get_Item(j);
                 String spel = portion.getText();
-                System.out.println("spel: " + spel);
+                log.debug("spel: {}", spel);
                 SpelExpressionParser parser = new SpelExpressionParser();
                 String text = String.valueOf(parser.parseExpression(spel, new TemplateParserContext()).getValue(dataSource.getEvaluationContext()));
-                System.out.println("spel: " + spel + ", text: " + text);
+                log.debug("spel: {}, text: {}", spel, text);
                 portion.setText(text);
             }
         }

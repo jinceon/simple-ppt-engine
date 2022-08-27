@@ -3,10 +3,15 @@ package io.gitee.jinceon.processor;
 import com.aspose.slides.*;
 import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Table;
+import io.gitee.jinceon.utils.MatrixUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
+import java.io.StringWriter;
+
 @Order(80)
+@Slf4j
 public class TableProcessor implements Processor {
     @Override
     public boolean supports(IShape shape) {
@@ -23,41 +28,48 @@ public class TableProcessor implements Processor {
         Table table = (Table) parser.parseExpression(spel,
                 new TemplateParserContext()).getValue(dataSource.getEvaluationContext());
         if (table == null) {
+            log.debug("spel: {}, no associated with Table or Table is null, ignored", spel);
             return;
         }
-        System.out.println("spel: " + spel + ", table: " + table);
         int dataRowCountOfUI = iTable.getRows().size();
         int dataColCountOfUI = iTable.getColumns().size();
         Object[][] tableData = table.getData();
-        int rowCountOfData = tableData.length;
-        int colCountOfData = tableData[0].length;
+        int rowCountOfData = table.getRowCount();
+        int colCountOfData = table.getColumnCount();
 
         if (rowCountOfData > dataRowCountOfUI || colCountOfData > dataColCountOfUI) {
-            throw new IllegalArgumentException(String.format("ui size is only %d*%d, actually need %d*%d, too small to fill in",
-                    dataRowCountOfUI, dataColCountOfUI, rowCountOfData, colCountOfData));
+            log.error("ui is smaller than data %n {}", MatrixUtil.visual(tableData));
+            throw new IllegalArgumentException(String.format("Table: %s, ui size is only %d*%d, actually need %d*%d, too small to fill in",
+                    spel, dataRowCountOfUI, dataColCountOfUI, rowCountOfData, colCountOfData));
         }
 
         IRowCollection rows = iTable.getRows();
+        StringWriter ui = new StringWriter();
+        ui.append("before process, ").append(spel).append(" in ui display like: \n");
         for (int row = 0; row < rows.size(); row++) {
             IRow iRow = rows.get_Item(row);
-            System.out.printf("%d \t", row);
+            ui.append(row + "\t");
             for (int col = 0; col < iRow.size(); col++) {
                 ICell cell = iRow.get_Item(col);
-                System.out.printf("'%s'\t", cell.getTextFrame().getText());
+                ui.append(cell.getTextFrame().getText()).append("\t");
             }
-            System.out.println();
+            ui.append("\n");
         }
-
+        log.debug(ui.toString());
+        StringWriter sw = new StringWriter();
+        sw.append(" writing data to table ").append(spel).append("\n");
         for (int row = 0; row < tableData.length; row++) {
             IRow iRow = rows.get_Item(row);
-            System.out.printf("%d \t", row);
+            sw.append(row + "\t");
             for (int col = 0; col < tableData[row].length; col++) {
                 ICell cell = iRow.get_Item(col);
-                System.out.printf("'%s'\t", tableData[row][col]);
-                cell.getTextFrame().setText(String.valueOf(tableData[row][col]));
+                sw.append(String.valueOf(tableData[row][col])).append("\t");
+                if(tableData[row][col]!=null) {
+                    cell.getTextFrame().setText(String.valueOf(tableData[row][col]));
+                }
             }
-            System.out.println();
+            sw.append("\n");
         }
-
+        log.debug(sw.toString());
     }
 }
