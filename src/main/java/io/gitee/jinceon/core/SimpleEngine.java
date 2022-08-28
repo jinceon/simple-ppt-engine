@@ -103,6 +103,7 @@ public class SimpleEngine {
                     if (slideProcessor.supports(spel)) {
                         Object context = slideProcessor.parseDirective(spel, dataSource);
                         slideProcessor.process(slide, context);
+                        break;
                     }
                 }
             }
