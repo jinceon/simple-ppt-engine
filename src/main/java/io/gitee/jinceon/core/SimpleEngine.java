@@ -1,11 +1,9 @@
 package io.gitee.jinceon.core;
 
 import com.aspose.slides.*;
-import io.gitee.jinceon.processor.ChartProcessor;
-import io.gitee.jinceon.processor.PaginationProcessor;
-import io.gitee.jinceon.processor.TableProcessor;
-import io.gitee.jinceon.processor.TextProcessor;
+import io.gitee.jinceon.processor.*;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +12,9 @@ import java.util.*;
 
 public class SimpleEngine {
     private boolean defaultProcessorsLoaded = false;
-    private final List<Processor> processors = new ArrayList<>();
+    private final List<DataProcessor> dataProcessors = new ArrayList<>();
+    private final List<SlideProcessor> slideProcessors = new ArrayList<>();
+    private final List<ShapeProcessor> shapeProcessors = new ArrayList<>();
     private DataSource dataSource;
     private final Presentation presentation;
 
@@ -51,33 +51,72 @@ public class SimpleEngine {
 
     private void loadProcessors(){
         if(!this.defaultProcessorsLoaded) {
-            this.processors.add(new ChartProcessor());
-            this.processors.add(new PaginationProcessor());
-            this.processors.add(new TableProcessor());
-            this.processors.add(new TextProcessor());
+            this.dataProcessors.add(new ChartDataProcessor());
+            this.dataProcessors.add(new TableDataProcessor());
+            this.dataProcessors.add(new TextDataProcessor());
+
+            this.slideProcessors.add(new DeleteSlideProcessor());
+            this.slideProcessors.add(new HideSlideProcessor());
+            this.slideProcessors.add(new PaginationSlideProcessor());
+
             this.defaultProcessorsLoaded = true;
         }
-        this.processors.sort(Comparator.comparingInt(o -> o.getClass().getAnnotation(Order.class).value()));
+        this.dataProcessors.sort(Comparator.comparingInt(o -> o.getClass().getAnnotation(Order.class).value()));
+        this.slideProcessors.sort(Comparator.comparingInt(o -> o.getClass().getAnnotation(Order.class).value()));
+        this.shapeProcessors.sort(Comparator.comparingInt(o -> o.getClass().getAnnotation(Order.class).value()));
     }
 
-    public List<Processor> getProcessors(){
+    public List<DataProcessor> getDataProcessors(){
         loadProcessors();
-        return Collections.unmodifiableList(this.processors);
+        return Collections.unmodifiableList(this.dataProcessors);
+    }
+
+    public List<SlideProcessor> getSlideProcessors() {
+        loadProcessors();
+        return Collections.unmodifiableList(this.slideProcessors);
+    }
+
+    public List<ShapeProcessor> getShapeProcessors() {
+        loadProcessors();
+        return Collections.unmodifiableList(this.shapeProcessors);
     }
 
     public void addProcessor(Processor processor){
-        this.processors.add(processor);
+        if(processor instanceof SlideProcessor p){
+            this.slideProcessors.add(p);
+        }else if(processor instanceof ShapeProcessor p){
+            this.shapeProcessors.add(p);
+        }else if(processor instanceof SlideProcessor p){
+            this.slideProcessors.add(p);
+        }
+
     }
 
     public void process(){
         loadProcessors();
         ISlideCollection slides = presentation.getSlides();
         for(ISlide slide: slides.toArray()){
+            //ppt下方备注备注
+            String spel = StringUtils.trimAllWhitespace(slide.getNotesSlideManager().getNotesSlide().getNotesTextFrame().getText());
+            if(StringUtils.hasText(spel)) {
+                for (SlideProcessor slideProcessor : this.slideProcessors) {
+                    if (slideProcessor.supports(spel)) {
+                        Object context = slideProcessor.parseDirective(spel, dataSource);
+                        slideProcessor.process(slide, context);
+                    }
+                }
+            }
+            try{
+                slide.getSlideNumber();
+            }catch (Exception e){
+                // when slide is deleted, get slide number will throw a NullPointerException
+                continue;
+            }
             IShapeCollection shapes = slide.getShapes();
             for(IShape shape: shapes.toArray()){
-                for(Processor processor: this.processors){
-                    if(processor.supports(shape)) {
-                        processor.process(shape, this.dataSource);
+                for(DataProcessor dataProcessor: this.dataProcessors){
+                    if(dataProcessor.supports(shape)) {
+                        dataProcessor.process(shape, this.dataSource);
                         break;
                     }
                 }

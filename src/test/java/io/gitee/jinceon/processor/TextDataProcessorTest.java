@@ -4,7 +4,7 @@ import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
 import org.junit.jupiter.api.Test;
 
-class TextProcessorTest {
+class TextDataProcessorTest {
 
     @Test
     void process() {

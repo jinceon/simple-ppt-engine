@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-class ChartProcessorTest {
+class ChartDataProcessorTest {
 
     @Test
     void pieChart() {

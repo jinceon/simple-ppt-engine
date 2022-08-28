@@ -5,14 +5,13 @@ import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Table;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import java.io.StringWriter;
 
 @Order(80)
 @Slf4j
-public class TableProcessor implements Processor {
+public class TableDataProcessor implements DataProcessor {
     @Override
     public boolean supports(IShape shape) {
         return shape instanceof ITable;

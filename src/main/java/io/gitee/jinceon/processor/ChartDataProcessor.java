@@ -4,12 +4,11 @@ import com.aspose.slides.*;
 import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Chart;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @Order(70)
 @Slf4j
-public class ChartProcessor implements Processor {
+public class ChartDataProcessor implements DataProcessor {
     @Override
     public boolean supports(IShape shape) {
         return shape instanceof IChart;

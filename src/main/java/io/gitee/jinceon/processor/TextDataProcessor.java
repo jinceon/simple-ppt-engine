@@ -3,14 +3,14 @@ package io.gitee.jinceon.processor;
 import com.aspose.slides.*;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.Processor;
+import io.gitee.jinceon.core.DataProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @Order(90)
 @Slf4j
-public class TextProcessor implements Processor {
+public class TextDataProcessor implements DataProcessor {
     @Override
     public boolean supports(IShape shape) {
         return shape instanceof IAutoShape;

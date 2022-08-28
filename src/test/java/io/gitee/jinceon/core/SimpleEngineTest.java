@@ -15,12 +15,12 @@ class SimpleEngineTest {
     @Test
     void addProcessor(){
         SimpleEngine engine = new SimpleEngine("src/test/resources/chart.pptx");
-        int oldSize = engine.getProcessors().size();
-        Processor first = new MyPreProcessor();
-        Processor last = new MyPostProcessor();
+        int oldSize = engine.getDataProcessors().size();
+        DataProcessor first = new MyPreDataProcessor();
+        DataProcessor last = new MyPostDataProcessor();
         engine.addProcessor(first);
         engine.addProcessor(last);
-        List<Processor> newProcessors = engine.getProcessors();
+        List<DataProcessor> newProcessors = engine.getDataProcessors();
         Assertions.assertEquals(oldSize+2, newProcessors.size());
         Assertions.assertEquals(first, newProcessors.get(0));
         Assertions.assertEquals(last, newProcessors.get(newProcessors.size()-1));
@@ -32,7 +32,7 @@ class SimpleEngineTest {
 }
 
 @Order(1)
-class MyPreProcessor implements Processor{
+class MyPreDataProcessor implements DataProcessor {
 
     @Override
     public boolean supports(IShape shape) {
@@ -46,7 +46,7 @@ class MyPreProcessor implements Processor{
 }
 
 @Order(Integer.MAX_VALUE)
-class MyPostProcessor implements Processor{
+class MyPostDataProcessor implements DataProcessor {
 
     @Override
     public boolean supports(IShape shape) {
