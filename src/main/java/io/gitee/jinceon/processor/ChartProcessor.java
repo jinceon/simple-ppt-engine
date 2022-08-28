@@ -22,8 +22,7 @@ public class ChartProcessor implements Processor {
         // PowerPoint only has AlternativeText
         String spel = shape.getAlternativeText();
         SpelExpressionParser parser = new SpelExpressionParser();
-        Chart chart = (Chart) parser.parseExpression(spel,
-                new TemplateParserContext()).getValue(dataSource.getEvaluationContext());
+        Chart chart = (Chart) parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
         log.debug("spel: {}, chart: {}", spel, chart);
         if(chart == null){
             return;

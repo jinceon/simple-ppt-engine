@@ -25,8 +25,7 @@ public class TableProcessor implements Processor {
         // PowerPoint only has AlternativeText
         String spel = shape.getAlternativeText();
         SpelExpressionParser parser = new SpelExpressionParser();
-        Table table = (Table) parser.parseExpression(spel,
-                new TemplateParserContext()).getValue(dataSource.getEvaluationContext());
+        Table table = (Table) parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
         if (table == null) {
             log.debug("spel: {}, no associated with Table or Table is null, ignored", spel);
             return;
