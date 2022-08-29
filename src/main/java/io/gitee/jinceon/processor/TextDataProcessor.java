@@ -18,12 +18,7 @@ public class TextDataProcessor implements DataProcessor {
 
     @Override
     public void process(IShape shape, DataSource dataSource) {
-        ITextFrame textFrame;
-        if(shape instanceof IAutoShape autoShape){
-            textFrame = autoShape.getTextFrame();
-        }else {
-            textFrame = (ITextFrame) shape;
-        }
+        ITextFrame textFrame = ((IAutoShape) shape).getTextFrame();
         IParagraphCollection paragraphs = textFrame.getParagraphs();
         for (int i = 0; i < paragraphs.getCount(); i++) {
             IParagraph paragraph = paragraphs.get_Item(i);
