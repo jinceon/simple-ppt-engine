@@ -1,7 +1,7 @@
 # simple-ppt-engine 简便PPT引擎
 named it `simple-ppt-engine` doesnot mean itself is a simple engine,
 but hope the way you use it is simple.  
-之所以取名“简便PPT引擎”，不意味着它本身很简单，而是希望你使用它的方式非常简便。
+之所以取名“简便PPT引擎”，不是想说它本身很简单，而是希望你使用它的方式非常简便。
 ## quick-start 快速起步
 
 ```java
@@ -57,16 +57,16 @@ in fact we don't care about which kind of chart you actually use, we just manipu
 
 [Chart Documentation](docs/processor/Chart.md)
 
-### Pagination 分页
+### For 循环
 when there are so many rows in a List and can not display in only one slide,
 you can use `#pagination` directive in slide note to define a pagination to split them to several slides.  
-当一个集合的数据很多一页PPT展示不完时，可以在ppt备注里使用`#pagination`指令来设置分页，每页展示N行并自动分成若干页。
+当一个集合的数据很多一页PPT展示不完时，可以在ppt备注里使用`#for`指令。
 
 ### Define your own Processor 自定义处理器
 implements an interface `Processor` and set an order use `@Order`.  
 实现接口`Processor`，配合`@Order`合理设置处理顺序。
 ```java
-@Order(Integer.MAX_VALUE)
+@Order(10)
 public class MyProcessor implements Processor {
     
     @Override

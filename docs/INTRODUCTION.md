@@ -37,7 +37,7 @@
 所以如果表格是动态的行、列，你需要在前面的模板处理阶段就先裁剪好合适的行、列。  
 引擎使用SpEL（Spring Expression Language）来设置数据源。  
 比如一个文本框的文本`hello, #{ #name }`，`#{ #name }`表示用变量`name`的值来替换。  
-比如一个表格，需要将其指向一个名为`tableA`的数据源，可以使用`#{ #tableA }`。
+比如一个表格，需要将其指向一个名为`tableA`的数据源，可以使用`#tableA`。
 
 ### Processing Order 处理顺序
 1. 遍历每一张幻灯片
