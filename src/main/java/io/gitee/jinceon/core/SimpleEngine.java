@@ -55,9 +55,8 @@ public class SimpleEngine {
             this.dataProcessors.add(new TableDataProcessor());
             this.dataProcessors.add(new TextDataProcessor());
 
-            this.slideProcessors.add(new DeleteSlideProcessor());
-            this.slideProcessors.add(new HideSlideProcessor());
-            this.slideProcessors.add(new PaginationSlideProcessor());
+            this.slideProcessors.add(new IfSlideProcessor());
+            this.slideProcessors.add(new ForSlideProcessor());
 
             this.defaultProcessorsLoaded = true;
         }
@@ -97,11 +96,15 @@ public class SimpleEngine {
         ISlideCollection slides = presentation.getSlides();
         for(ISlide slide: slides.toArray()){
             //ppt下方备注备注
-            String spel = StringUtils.trimAllWhitespace(slide.getNotesSlideManager().getNotesSlide().getNotesTextFrame().getText());
-            if(StringUtils.hasText(spel)) {
+            String spel = slide.getNotesSlideManager().getNotesSlide().getNotesTextFrame().getText();
+            int spliter = spel.indexOf("=");
+            // spel = “#if = true”，前面至少要有#号+至少一个字符才有意义
+            if(spliter > 2) {
+                String directive = StringUtils.trimAllWhitespace(spel.substring(0, spliter));
+                String expression = spel.substring(spliter+1);//等号本身不算
                 for (SlideProcessor slideProcessor : this.slideProcessors) {
-                    if (slideProcessor.supports(spel)) {
-                        Object context = slideProcessor.parseDirective(spel, dataSource);
+                    if (slideProcessor.supports(directive)) {
+                        Object context = slideProcessor.parseDirective(expression, dataSource);
                         slideProcessor.process(slide, context);
                         break;
                     }

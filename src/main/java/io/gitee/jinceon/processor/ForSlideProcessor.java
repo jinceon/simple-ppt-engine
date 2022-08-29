@@ -19,20 +19,20 @@ import java.util.Collection;
  */
 @Order(1900)
 @Slf4j
-public class PaginationSlideProcessor implements SlideProcessor {
-    private static final String PREFIX = "#pagination=";
+public class ForSlideProcessor implements SlideProcessor {
+    private static final String DIRECTIVE = "#for";
     private static final String INDEX_PLACEHOLDER = "#_index_";
 
     @Override
-    public boolean supports(String spel) {
-        return spel.startsWith(PREFIX);
+    public boolean supports(String directive) {
+        return directive.equals(DIRECTIVE);
     }
 
     @Override
-    public Object parseDirective(String spel, DataSource dataSource) {
+    public Object parseDirective(String expression, DataSource dataSource) {
         SpelExpressionParser parser = new SpelExpressionParser();
-        Object o = parser.parseExpression(spel.substring(PREFIX.length())).getValue(dataSource.getEvaluationContext(), Pagination.class);
-        log.debug("spel:{}, value:{}", spel, o);
+        Object o = parser.parseExpression(expression).getValue(dataSource.getEvaluationContext(), Pagination.class);
+        log.debug("expression:{}, value:{}", expression, o);
         return o;
     }
 

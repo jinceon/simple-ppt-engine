@@ -10,11 +10,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HideSlideProcessorTest {
+class IfSlideProcessorTest {
 
     @Test
     void process() {
-        SimpleEngine engine = new SimpleEngine("src/test/resources/hide.pptx");
+        SimpleEngine engine = new SimpleEngine("src/test/resources/if-slide.pptx");
         DataSource dataSource = new DataSource();
         List users = new ArrayList<>();
         users.add(new User("jinceon"));
@@ -23,6 +23,6 @@ class HideSlideProcessorTest {
         dataSource.setVariable("users2", new ArrayList<>());
         engine.setDataSource(dataSource);
         engine.process();
-        engine.save("src/test/resources/test-hide.pptx");
+        engine.save("src/test/resources/test-if-slide.pptx");
     }
 }
