@@ -96,7 +96,7 @@ public class SimpleEngine {
         ISlideCollection slides = presentation.getSlides();
         for(ISlide slide: slides.toArray()){
             //ppt下方备注备注
-            String spel = slide.getNotesSlideManager().getNotesSlide().getNotesTextFrame().getText();
+            String spel = getTextFromNotes(slide);
             int spliter = spel.indexOf("=");
             // spel = “#if = true”，前面至少要有#号+至少一个字符才有意义
             if(spliter > 2) {
@@ -126,5 +126,13 @@ public class SimpleEngine {
                 }
             }
         }
+    }
+
+    private static String getTextFromNotes(ISlide slide) {
+        INotesSlide notes = slide.getNotesSlideManager().getNotesSlide();
+        if(notes == null){
+            return "";
+        }
+        return notes.getNotesTextFrame().getText();
     }
 }

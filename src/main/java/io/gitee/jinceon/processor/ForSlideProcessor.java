@@ -4,13 +4,11 @@ import com.aspose.slides.*;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.SlideProcessor;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * #pagination
@@ -31,7 +29,7 @@ public class ForSlideProcessor implements SlideProcessor {
     @Override
     public Object parseDirective(String expression, DataSource dataSource) {
         SpelExpressionParser parser = new SpelExpressionParser();
-        Object o = parser.parseExpression(expression).getValue(dataSource.getEvaluationContext(), Pagination.class);
+        Object o = parser.parseExpression(expression).getValue(dataSource.getEvaluationContext());
         log.debug("expression:{}, value:{}", expression, o);
         return o;
     }
@@ -43,8 +41,20 @@ public class ForSlideProcessor implements SlideProcessor {
      */
     @Override
     public void process(ISlide slide, Object context) {
-        Pagination pagination = (Pagination) context;
-        int size = pagination.getCollection().size();
+        if(context == null){
+            slide.remove();
+            return;
+        }
+        int size = 0;
+        if(context instanceof List list){
+            size = list.size();
+        }else if(context instanceof Object[] array){
+            size = array.length;
+        }
+        if(size == 0){
+            slide.remove();
+            return;
+        }
         IShapeCollection shapes = slide.getShapes();
         for (int page = 0; page < size; page++) {
             String index = "" + page;
@@ -64,16 +74,6 @@ public class ForSlideProcessor implements SlideProcessor {
                     shape.setAlternativeText(StringUtils.replace(shape.getAlternativeText(), INDEX_PLACEHOLDER, index));
                 }
             }
-        }
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class Pagination {
-        private Collection collection;
-        private EmptyStrategy empty;
-
-        private static class EmptyStrategy {
         }
     }
 }
