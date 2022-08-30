@@ -11,9 +11,8 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 /**
- * #pagination
- * #items
- * empty=hide|delete|anything else
+ * #for = items
+ * when `items` is null or empty array (list), slide will be removed
  */
 @Order(1900)
 @Slf4j
@@ -55,24 +54,31 @@ public class ForSlideProcessor implements SlideProcessor {
             slide.remove();
             return;
         }
+        int number = slide.getSlideNumber();
+        for (int page = 1; page < size; page++) {
+            // 自身占了一张幻灯片，只需复制 size-1 张
+            ISlide cloned = slide.getPresentation().getSlides().insertClone(number+page-1, slide);
+            replaceIndex(cloned, page+"");
+        }
+        replaceIndex(slide, "0");//自身的下标也要换，并且要最后，不然复制的就不是#_index_，就没法替换下标了
+    }
+
+    private static void replaceIndex(ISlide slide, String pageIndex){
         IShapeCollection shapes = slide.getShapes();
-        for (int page = 0; page < size; page++) {
-            String index = "" + page;
-            for (IShape shape : shapes.toArray()) {
-                if (shape instanceof IAutoShape text) {
-                    ITextFrame textFrame = text.getTextFrame();
-                    IParagraphCollection paragraphs = textFrame.getParagraphs();
-                    for (int i = 0; i < paragraphs.getCount(); i++) {
-                        IParagraph paragraph = paragraphs.get_Item(i);
-                        IPortionCollection portions = paragraph.getPortions();
-                        for (int j = 0; j < portions.getCount(); j++) {
-                            IPortion portion = portions.get_Item(j);
-                            portion.setText(StringUtils.replace(portion.getText(), INDEX_PLACEHOLDER, index));
-                        }
+        for (IShape shape : shapes.toArray()) {
+            if (shape instanceof IAutoShape text) {
+                ITextFrame textFrame = text.getTextFrame();
+                IParagraphCollection paragraphs = textFrame.getParagraphs();
+                for (int i = 0; i < paragraphs.getCount(); i++) {
+                    IParagraph paragraph = paragraphs.get_Item(i);
+                    IPortionCollection portions = paragraph.getPortions();
+                    for (int j = 0; j < portions.getCount(); j++) {
+                        IPortion portion = portions.get_Item(j);
+                        portion.setText(StringUtils.replace(portion.getText(), INDEX_PLACEHOLDER, pageIndex));
                     }
-                } else {
-                    shape.setAlternativeText(StringUtils.replace(shape.getAlternativeText(), INDEX_PLACEHOLDER, index));
                 }
+            } else {
+                shape.setAlternativeText(StringUtils.replace(shape.getAlternativeText(), INDEX_PLACEHOLDER, pageIndex));
             }
         }
     }

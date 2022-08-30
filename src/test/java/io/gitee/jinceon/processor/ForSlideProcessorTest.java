@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 class ForSlideProcessorTest {
     @Test
     void process() {
-        SimpleEngine engine = new SimpleEngine("src/test/resources/for.pptx");
+        SimpleEngine engine = new SimpleEngine("src/test/resources/for-slide.pptx");
         DataSource dataSource = new DataSource();
         dataSource.setVariable("users1", null);
         dataSource.setVariable("users2", new ArrayList<>());
@@ -31,7 +31,7 @@ class ForSlideProcessorTest {
         dataSource.setVariable("pages", pages.toArray());
         engine.setDataSource(dataSource);
         engine.process();
-        engine.save("src/test/resources/test-for.pptx");
+        engine.save("src/test/resources/test-for-slide.pptx");
     }
 
     private Chart createChart(){

@@ -93,8 +93,7 @@ public class SimpleEngine {
 
     public void process(){
         loadProcessors();
-        ISlideCollection slides = presentation.getSlides();
-        for(ISlide slide: slides.toArray()){
+        for(ISlide slide: presentation.getSlides().toArray()){
             //ppt下方备注备注
             String spel = getTextFromNotes(slide);
             int spliter = spel.indexOf("=");
@@ -110,12 +109,9 @@ public class SimpleEngine {
                     }
                 }
             }
-            try{
-                slide.getSlideNumber();
-            }catch (Exception e){
-                // when slide is deleted, get slide number will throw a NullPointerException
-                continue;
-            }
+        }
+        //不能在同一个循环，因为可能发生slide的增删，已经不是同一批幻灯片了
+        for(ISlide slide:presentation.getSlides().toArray()){
             IShapeCollection shapes = slide.getShapes();
             for(IShape shape: shapes.toArray()){
                 for(DataProcessor dataProcessor: this.dataProcessors){

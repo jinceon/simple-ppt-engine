@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
- * #delete = #{ expression }
- * when expression evaluate result equals '#hide = true', the slide will be deleted
+ * #if =  expression
+ * when expression evaluate result equal false, slide will be removed.
  */
 @Order(1000)
 @Slf4j
