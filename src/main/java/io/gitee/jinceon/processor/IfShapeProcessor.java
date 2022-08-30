@@ -1,19 +1,19 @@
 package io.gitee.jinceon.processor;
 
-import com.aspose.slides.ISlide;
+import com.aspose.slides.IShape;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.SlideProcessor;
+import io.gitee.jinceon.core.ShapeProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
  * #if =  expression
- * when expression evaluate result equal false, slide will be removed.
+ * when expression evaluate result equal false, shape will be removed.
  */
 @Order(1000)
 @Slf4j
-public class IfSlideProcessor implements SlideProcessor {
+public class IfShapeProcessor implements ShapeProcessor {
     private static final String DIRECTIVE = "#if";
     @Override
     public boolean supports(String directive) {
@@ -29,10 +29,12 @@ public class IfSlideProcessor implements SlideProcessor {
     }
 
     @Override
-    public void process(ISlide slide, Object context) {
+    public void process(IShape shape, Object context) {
         if(!Boolean.TRUE.equals(context)){
-            slide.remove();
-            log.debug("#if=false set slide `{}` invisible", slide.getName());
+//            shape.getSlide().getShapes().remove(shape);
+            // 删除和隐藏 肉眼看起来效果似乎一样
+            log.debug("#if=false set shape `{}` invisible", shape.getName());
+            shape.setHidden(true);
         }
     }
 }

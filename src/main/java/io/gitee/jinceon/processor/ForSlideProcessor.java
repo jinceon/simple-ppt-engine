@@ -41,6 +41,7 @@ public class ForSlideProcessor implements SlideProcessor {
     @Override
     public void process(ISlide slide, Object context) {
         if(context == null){
+            log.debug("#for=null delete slide");
             slide.remove();
             return;
         }
@@ -51,9 +52,11 @@ public class ForSlideProcessor implements SlideProcessor {
             size = array.length;
         }
         if(size == 0){
+            log.debug("#for=( a empty object) delete slide");
             slide.remove();
             return;
         }
+        log.debug("#for=[ {} item{} ], insert {} clone slide{}", size, size>1?"s":"", size-1, size>2?"s":"");
         int number = slide.getSlideNumber();
         for (int page = 1; page < size; page++) {
             // 自身占了一张幻灯片，只需复制 size-1 张

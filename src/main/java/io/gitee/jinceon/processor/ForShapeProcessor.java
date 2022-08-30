@@ -1,20 +1,20 @@
 package io.gitee.jinceon.processor;
 
-import com.aspose.slides.ISlide;
+import com.aspose.slides.IShape;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.SlideProcessor;
+import io.gitee.jinceon.core.ShapeProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
- * #if =  expression
- * when expression evaluate result equal false, slide will be removed.
+ * #for = items
+ * when `items` is null or empty array (list), slide will be removed
  */
 @Order(1000)
 @Slf4j
-public class IfSlideProcessor implements SlideProcessor {
-    private static final String DIRECTIVE = "#if";
+public class ForShapeProcessor implements ShapeProcessor {
+    private static final String DIRECTIVE = "#for";
     @Override
     public boolean supports(String directive) {
         return directive.equals(DIRECTIVE);
@@ -29,10 +29,9 @@ public class IfSlideProcessor implements SlideProcessor {
     }
 
     @Override
-    public void process(ISlide slide, Object context) {
+    public void process(IShape shape, Object context) {
         if(!Boolean.TRUE.equals(context)){
-            slide.remove();
-            log.debug("#if=false set slide `{}` invisible", slide.getName());
+            shape.setHidden(true);
         }
     }
 }

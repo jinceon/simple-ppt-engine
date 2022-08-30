@@ -58,6 +58,9 @@ public class SimpleEngine {
             this.slideProcessors.add(new IfSlideProcessor());
             this.slideProcessors.add(new ForSlideProcessor());
 
+            this.shapeProcessors.add(new IfShapeProcessor());
+            this.shapeProcessors.add(new ForShapeProcessor());
+
             this.defaultProcessorsLoaded = true;
         }
         this.dataProcessors.sort(Comparator.comparingInt(o -> o.getClass().getAnnotation(Order.class).value()));
@@ -114,6 +117,20 @@ public class SimpleEngine {
         for(ISlide slide:presentation.getSlides().toArray()){
             IShapeCollection shapes = slide.getShapes();
             for(IShape shape: shapes.toArray()){
+                String spel = shape.getAlternativeText();
+                int spliter = spel.indexOf("=");
+                // spel = “#if = true”，前面至少要有#号+至少一个字符才有意义
+                if(spliter > 2) {
+                    String directive = StringUtils.trimAllWhitespace(spel.substring(0, spliter));
+                    String expression = spel.substring(spliter + 1);//等号本身不算
+                    for (ShapeProcessor shapeProcessor : this.shapeProcessors) {
+                        if (shapeProcessor.supports(directive)) {
+                            Object context = shapeProcessor.parseDirective(expression, dataSource);
+                            shapeProcessor.process(shape, context);
+                            break;
+                        }
+                    }
+                }
                 for(DataProcessor dataProcessor: this.dataProcessors){
                     if(dataProcessor.supports(shape)) {
                         dataProcessor.process(shape, this.dataSource);
