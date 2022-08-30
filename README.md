@@ -57,10 +57,11 @@ in fact we don't care about which kind of chart you actually use, we just manipu
 
 [Chart Documentation](docs/processor/Chart.md)
 
-### For 循环
-when there are so many rows in a List and can not display in only one slide,
-you can use `#pagination` directive in slide note to define a pagination to split them to several slides.  
-当一个集合的数据很多一页PPT展示不完时，可以在ppt备注里使用`#for`指令。
+### If 指令
+[if指令](docs/directive/if.md)
+
+### For 指令
+[for指令](docs/directive/for.md)
 
 ### Define your own Processor 自定义处理器
 implements an interface `Processor` and set an order use `@Order`.  
