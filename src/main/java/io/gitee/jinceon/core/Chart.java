@@ -98,7 +98,8 @@ public class Chart {
             Object src = list.get(row);
             Object[] target = this.data[row];
             for (int col = 0; col < series.length; col++) {
-                if(src instanceof Map map) {
+                if(src instanceof Map) {
+                    Map map = (Map) src;
                     target[col] = map.get(series[col]);
                 }else {
                     try {

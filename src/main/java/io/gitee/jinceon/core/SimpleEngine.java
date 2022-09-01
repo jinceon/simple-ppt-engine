@@ -74,12 +74,12 @@ public class SimpleEngine {
     }
 
     public void addProcessor(Processor processor){
-        if(processor instanceof SlideProcessor p){
-            this.slideProcessors.add(p);
-        }else if(processor instanceof ShapeProcessor p){
-            this.shapeProcessors.add(p);
-        }else if(processor instanceof DataProcessor p){
-            this.dataProcessors.add(p);
+        if(processor instanceof SlideProcessor){
+            this.slideProcessors.add((SlideProcessor) processor);
+        }else if(processor instanceof ShapeProcessor){
+            this.shapeProcessors.add((ShapeProcessor) processor);
+        }else if(processor instanceof DataProcessor){
+            this.dataProcessors.add((DataProcessor) processor);
         }
 
     }

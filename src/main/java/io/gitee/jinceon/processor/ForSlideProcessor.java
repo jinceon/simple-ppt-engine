@@ -46,9 +46,11 @@ public class ForSlideProcessor implements SlideProcessor {
             return;
         }
         int size = 0;
-        if(context instanceof List list){
+        if(context instanceof List){
+            List list = (List) context;
             size = list.size();
-        }else if(context instanceof Object[] array){
+        }else if(context instanceof Object[] ){
+            Object[] array = (Object[]) context;
             size = array.length;
         }
         if(size == 0){
@@ -69,7 +71,8 @@ public class ForSlideProcessor implements SlideProcessor {
     private static void replaceIndex(ISlide slide, String pageIndex){
         IShapeCollection shapes = slide.getShapes();
         for (IShape shape : shapes.toArray()) {
-            if (shape instanceof IAutoShape text) {
+            if (shape instanceof IAutoShape) {
+                IAutoShape text = (IAutoShape) shape;
                 ITextFrame textFrame = text.getTextFrame();
                 IParagraphCollection paragraphs = textFrame.getParagraphs();
                 for (int i = 0; i < paragraphs.getCount(); i++) {

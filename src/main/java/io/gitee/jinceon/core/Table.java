@@ -84,7 +84,8 @@ public class Table {
             Object src = list.get(row);
             Object[] target = this.data[row];
             for (int col = 0; col < headers.length; col++) {
-                if(src instanceof Map map) {
+                if(src instanceof Map) {
+                    Map map = (Map) src;
                     target[col] = map.get(headers[col]);
                 }else {
                     try {
@@ -130,7 +131,7 @@ public class Table {
         }
         Object[][] newTable = new Object[row][col];
         switch (position) {
-            case LEFT -> {
+            case LEFT : {
                 for (int r = 0; r < table.getRowCount(); r++) {
                     System.arraycopy(table.getData()[r], 0, newTable[r], 0, table.getColumnCount());
                 }
@@ -138,8 +139,9 @@ public class Table {
                 for (int r = 0; r < this.getRowCount(); r++) {
                     System.arraycopy(this.data[r], 0, newTable[r], offset, this.getColumnCount());
                 }
+                break;
             }
-            case RIGHT -> {
+            case RIGHT : {
                 for (int r = 0; r < this.getRowCount(); r++) {
                     System.arraycopy(this.data[r], 0, newTable[r], 0, this.getColumnCount());
                 }
@@ -147,8 +149,9 @@ public class Table {
                 for (int r = 0; r < table.getRowCount(); r++) {
                     System.arraycopy(table.getData()[r], 0, newTable[r], offset, table.getColumnCount());
                 }
+                break;
             }
-            case TOP -> {
+            case TOP : {
                 for (int r = 0; r < table.getRowCount(); r++) {
                     System.arraycopy(table.getData()[r], 0, newTable[r], 0, table.getColumnCount());
                 }
@@ -156,8 +159,9 @@ public class Table {
                 for (int r = 0; r < this.getRowCount(); r++) {
                     System.arraycopy(this.data[r], 0, newTable[r + offset], 0, this.getColumnCount());
                 }
+                break;
             }
-            case BOTTOM -> {
+            case BOTTOM :{
                 for (int r = 0; r < this.getRowCount(); r++) {
                     System.arraycopy(this.data[r], 0, newTable[r], 0, this.getColumnCount());
                 }
@@ -165,6 +169,7 @@ public class Table {
                 for (int r = 0; r < this.getRowCount(); r++) {
                     System.arraycopy(table.getData()[r], 0, newTable[r + offset], 0, table.getColumnCount());
                 }
+                break;
             }
         }
         this.data = newTable;
