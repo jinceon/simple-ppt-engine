@@ -60,7 +60,7 @@ public class ChartDataProcessor implements DataProcessor {
                 matrix[row+1][col+1]=data[row][col];
             }
         }
-        String newRange = String.format("Sheet1!$A$1:$%s$%d", number2Char(series.length) +1, categories.length +1);
+        String newRange = String.format("Sheet1!$A$1:$%s$%d", number2Char(series.length+1) , categories.length +1);
         log.debug("spel: {}, new range: {}",spel, newRange);
         chartData.setRange(newRange);
         if(debug) {
