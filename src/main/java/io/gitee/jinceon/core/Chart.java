@@ -9,6 +9,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ToString
 public class Chart {
@@ -31,6 +32,10 @@ public class Chart {
 
     public Chart() {
 
+    }
+
+    public Chart(Pair[] series){
+        this.series = series;
     }
 
     public Chart(String[] categories, Pair[] series) {
@@ -72,6 +77,29 @@ public class Chart {
         this.data = data;
     }
 
+    public void setDataWithCategories(List list, String categoryField){
+        Assert.notEmpty(list, "list must not be empty");
+        Assert.notEmpty(series, "series must not be empty");
+        this.categories = new String[list.size()];
+        Object o = list.get(0);
+        if(o instanceof Map){
+            for(int c = 0;c<list.size();c++){
+                Map item = (Map)list.get(c);
+                this.categories[c] = String.valueOf(item.get(categoryField));
+            }
+        }else{
+            Field field = ReflectionUtils.findField(o.getClass(), categoryField);
+            field.setAccessible(true);
+            for(int c = 0;c<list.size();c++){
+                try {
+                    this.categories[c] = String.valueOf(field.get(list.get(c)));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        setData(list);
+    }
 
     public void setData(List list) {
         Assert.notEmpty(list, "list must not be empty");

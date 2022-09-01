@@ -38,13 +38,11 @@ class ChartDataProcessorTest {
         for(int i=0;i<10;i++){
             counts.add(new AgeCount("age "+(i*10)+"-"+(i+1)*10, random.nextInt(100)));
         }
-
-        String[] categories = counts.stream().map(AgeCount::getAgeRange).collect(Collectors.toList()).toArray(new String[0]);
         Pair[] series = new Pair[]{
                 new Pair("数量", "count")
         };
-        Chart chart = new Chart(categories, series);
-        chart.setData(counts);
+        Chart chart = new Chart(series);
+        chart.setDataWithCategories(counts, "ageRange");
        return chart;
     }
 
@@ -59,14 +57,13 @@ class ChartDataProcessorTest {
                     .build());
         }
 
-        String[] categories = scores.stream().map(Score::getName).collect(Collectors.toList()).toArray(new String[0]);
         Pair[] series = new Pair[]{
                 new Pair("数学", "math"),
                 new Pair("语文", "chinese"),
                 new Pair("英语", "english")
         };
-        Chart chart = new Chart(categories, series);
-        chart.setData(scores);
+        Chart chart = new Chart(series);
+        chart.setDataWithCategories(scores, "name");
         return chart;
     }
 
