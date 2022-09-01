@@ -17,10 +17,22 @@ import java.util.stream.Collectors;
 class ChartDataProcessorTest {
 
     @Test
-    void pieChart() {
+    void process(){
         SimpleEngine engine = new SimpleEngine("src/test/resources/chart.pptx");
         DataSource dataSource = new DataSource();
+        Chart chartA = pieChart();
+        Chart chartB = barChart();
+        Chart chartC = lineChart();
+        dataSource.setVariable("chartA", chartA);
+        dataSource.setVariable("chartB", chartB);
+        dataSource.setVariable("chartC", chartC);
+        engine.setDataSource(dataSource);
+        engine.process();
+        engine.save("src/test/resources/test-chart.pptx");
+    }
 
+
+    Chart pieChart() {
         List<AgeCount> counts = new ArrayList<>();
         Random random = new Random();
         for(int i=0;i<10;i++){
@@ -29,22 +41,14 @@ class ChartDataProcessorTest {
 
         String[] categories = counts.stream().map(AgeCount::getAgeRange).collect(Collectors.toList()).toArray(new String[0]);
         Pair[] series = new Pair[]{
-                new Pair("年龄区间", "ageRange"),
                 new Pair("数量", "count")
         };
         Chart chart = new Chart(categories, series);
         chart.setData(counts);
-        dataSource.setVariable("chartA", chart);
-        engine.setDataSource(dataSource);
-        engine.process();
-        engine.save("src/test/resources/test-chartA.pptx");
+       return chart;
     }
 
-    @Test
-    void barChart() {
-        SimpleEngine engine = new SimpleEngine("src/test/resources/chart.pptx");
-        DataSource dataSource = new DataSource();
-
+    Chart barChart() {
         List<Score> scores = new ArrayList<>();
         Random random = new Random();
         for(int i=0;i<10;i++){
@@ -57,24 +61,16 @@ class ChartDataProcessorTest {
 
         String[] categories = scores.stream().map(Score::getName).collect(Collectors.toList()).toArray(new String[0]);
         Pair[] series = new Pair[]{
-                new Pair("姓名", "name"),
                 new Pair("数学", "math"),
                 new Pair("语文", "chinese"),
                 new Pair("英语", "english")
         };
         Chart chart = new Chart(categories, series);
         chart.setData(scores);
-        dataSource.setVariable("chartB", chart);
-        engine.setDataSource(dataSource);
-        engine.process();
-        engine.save("src/test/resources/test-chartB.pptx");
+        return chart;
     }
 
-    @Test
-    void lineChart() {
-        SimpleEngine engine = new SimpleEngine("src/test/resources/chart.pptx");
-        DataSource dataSource = new DataSource();
-
+    Chart lineChart() {
         List<Sales> counts = new ArrayList<>();
         Random random = new Random();
         for(int i=1;i<13;i++){
@@ -89,10 +85,7 @@ class ChartDataProcessorTest {
         };
         Chart chart = new Chart(categories, series);
         chart.setData(counts);
-        dataSource.setVariable("chartC", chart);
-        engine.setDataSource(dataSource);
-        engine.process();
-        engine.save("src/test/resources/test-chartC.pptx");
+        return chart;
     }
 }
 

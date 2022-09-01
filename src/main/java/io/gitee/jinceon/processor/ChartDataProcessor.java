@@ -3,6 +3,7 @@ package io.gitee.jinceon.processor;
 import com.aspose.slides.*;
 import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Chart;
+import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
@@ -27,30 +28,44 @@ public class ChartDataProcessor implements DataProcessor {
             return;
         }
         IChartData chartData = iChart.getChartData();
+        log.debug("before rendering, iChart series:{}, categories: {}",chartData.getSeries().size(), chartData.getCategories().size());
         IChartDataWorkbook chartDataWorkbook = chartData.getChartDataWorkbook();
         log.debug("spel : {}, template range: {}", spel, chartData.getRange());
         int workSheetIndex = 0;
         int seriesRow = 0;
-        int CategoriesColumn = 0;
+        int categoriesColumn = 0;
         String[] categories = chart.getCategories();
-        for (int row = 0; row < categories.length; row++) {
-            chartDataWorkbook.getCell(workSheetIndex, row+1, CategoriesColumn).setValue(categories[row]);
-        }
         Chart.Pair[] series = chart.getSeries();
+        boolean debug = log.isDebugEnabled();
+        Object[][] matrix = new Object[0][];
+        if(debug){
+            matrix = new Object[categories.length+1][series.length+1];
+        }
+        for (int row = 0; row < categories.length; row++) {
+            chartDataWorkbook.getCell(workSheetIndex, row+1, categoriesColumn).setValue(categories[row]);
+            if(debug){
+                matrix[row+1][categoriesColumn] = categories[row];
+            }
+        }
         for (int col = 0; col < series.length; col++) {
             chartDataWorkbook.getCell(workSheetIndex, seriesRow, col+1).setValue(series[col].getLabel());
+            if(debug){
+                matrix[seriesRow][col+1] = series[col].getLabel();
+            }
         }
         Object[][] data = chart.getData();
         for (int row = 0; row < categories.length; row++) {
             for (int col = 0; col < series.length; col++) {
                 chartDataWorkbook.getCell(workSheetIndex, row+1, col+1).setValue(data[row][col]);
+                matrix[row+1][col+1]=data[row][col];
             }
         }
         String newRange = String.format("Sheet1!$A$1:$%s$%d", number2Char(series.length) +1, categories.length +1);
         log.debug("spel: {}, new range: {}",spel, newRange);
         chartData.setRange(newRange);
-        IChartCellCollection cells = chartDataWorkbook.getCellCollection(chartData.getRange(), true);
-        cells.forEach(iChartDataCell -> log.debug("cell: row={} col={} value={}", iChartDataCell.getRow(), iChartDataCell.getColumn(), iChartDataCell.getValue()));
+        if(debug) {
+            log.debug(MatrixUtil.visual(matrix));
+        }
     }
 
     /**

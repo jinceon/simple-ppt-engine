@@ -19,7 +19,7 @@ public class Chart {
      2   张三   59    65     73
      3   李四   98    85     93
      4   王五   78    87     89
-          ↓                          $B2$D4 = data
+          ↓                          $B2$D4 = data (caution: first row and first col are out of data area)
         $A2$A4 = categories
      */
     private String[] categories;
