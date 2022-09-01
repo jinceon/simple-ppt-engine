@@ -78,8 +78,8 @@ public class SimpleEngine {
             this.slideProcessors.add(p);
         }else if(processor instanceof ShapeProcessor p){
             this.shapeProcessors.add(p);
-        }else if(processor instanceof SlideProcessor p){
-            this.slideProcessors.add(p);
+        }else if(processor instanceof DataProcessor p){
+            this.dataProcessors.add(p);
         }
 
     }
