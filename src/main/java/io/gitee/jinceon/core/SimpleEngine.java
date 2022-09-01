@@ -2,13 +2,14 @@ package io.gitee.jinceon.core;
 
 import com.aspose.slides.*;
 import io.gitee.jinceon.processor.*;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class SimpleEngine {
     private boolean defaultProcessorsLoaded = false;
@@ -17,17 +18,6 @@ public class SimpleEngine {
     private final List<ShapeProcessor> shapeProcessors = new ArrayList<>();
     private DataSource dataSource;
     private final Presentation presentation;
-
-    static {
-        License license = new License();
-        try {
-            InputStream  inputStream = new ClassPathResource("aspose-license.xml").getInputStream();
-            license.setLicense(inputStream);
-            inputStream.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public SimpleEngine(String file){
         this.presentation = new Presentation(file);
