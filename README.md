@@ -52,7 +52,8 @@ easily render a collection (such as List) to a Table.
 [Table Documentation](docs/processor/Table.md)
 
 ### Chart 图表
-in fact we don't care about which kind of chart you actually use, we just manipulate the data table nested in the shape.  
+in fact we don't care about which kind of chart you actually use, 
+we just manipulate the data table nested in the shape.  
 事实上我们不关心你用的是饼图、直方图还是什么别的，我们只操作内置在PPT里的表格数据。
 
 [Chart Documentation](docs/processor/Chart.md)
@@ -64,20 +65,10 @@ in fact we don't care about which kind of chart you actually use, we just manipu
 [for指令](docs/directive/for.md)
 
 ### Define your own Processor 自定义处理器
-implements an interface `Processor` and set an order use `@Order`.  
-实现接口`Processor`，配合`@Order`合理设置处理顺序。
-```java
-@Order(10)
-public class MyProcessor implements Processor {
-    
-    @Override
-    public boolean supports(Shape shape){
-        return true;
-    }
-    
-    @Override
-    public void process(Shape shape, Context dataSource){
-        shape.color = "#00FF00";
-    }
-}
-```
+1. let your class implements an interface. 自定义处理器实现3个接口中的一个。
+    > DataProcessor, ShapeProcessor, SlideProcessor
+2. set an order use `@Order`. 配合`@Order`合理设置处理顺序。
+3. use `addProcess()` to add your processor into engine's processors list. 加入到引擎的处理器列表。
+
+## FAQ 常见问题
+[常见问题](docs/faq.md)
