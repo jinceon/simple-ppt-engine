@@ -6,13 +6,18 @@ import io.gitee.jinceon.core.Chart;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.util.StringUtils;
 
 @Order(70)
 @Slf4j
 public class ChartDataProcessor implements DataProcessor {
     @Override
     public boolean supports(IShape shape) {
-        return shape instanceof IChart;
+        String text = shape.getAlternativeText();
+        return shape instanceof IChart
+                && StringUtils.hasText(text)
+                && text.contains("#");
+
     }
 
     @Override

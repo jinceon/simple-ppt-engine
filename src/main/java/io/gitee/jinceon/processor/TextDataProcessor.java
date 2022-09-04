@@ -7,13 +7,17 @@ import io.gitee.jinceon.core.DataProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.util.StringUtils;
 
 @Order(90)
 @Slf4j
 public class TextDataProcessor implements DataProcessor {
     @Override
     public boolean supports(IShape shape) {
-        return shape instanceof IAutoShape;
+        String text = ((IAutoShape) shape).getTextFrame().getText();
+        return shape instanceof IAutoShape
+                && StringUtils.hasText(text)
+                && text.contains("#{");
     }
 
     @Override

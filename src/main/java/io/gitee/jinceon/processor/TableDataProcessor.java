@@ -6,6 +6,7 @@ import io.gitee.jinceon.core.Table;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.util.StringUtils;
 
 import java.io.StringWriter;
 
@@ -14,7 +15,10 @@ import java.io.StringWriter;
 public class TableDataProcessor implements DataProcessor {
     @Override
     public boolean supports(IShape shape) {
-        return shape instanceof ITable;
+        String text = shape.getAlternativeText();
+        return shape instanceof ITable
+                && StringUtils.hasText(text)
+                && text.contains("#");
     }
 
     @Override
