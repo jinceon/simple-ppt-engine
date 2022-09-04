@@ -70,5 +70,12 @@ we just manipulate the data table nested in the shape.
 2. set an order use `@Order`. 配合`@Order`合理设置处理顺序。
 3. use `addProcess()` to add your processor into engine's processors list. 加入到引擎的处理器列表。
 
+## RoadMap 产品蓝图
+- [dynamic style 动态样式](docs/roadmap/dynamic-style.md)
+- apache poi implementation 用开源的apache poi替换掉商业闭源的aspose
+
+## Todo 待办
+- unit test and coverage 单元测试及代码覆盖率
+
 ## FAQ 常见问题
 [常见问题](docs/faq.md)
