@@ -3,7 +3,10 @@ named it `simple-ppt-engine` doesnot mean itself is a simple engine,
 but hope the way you use it is simple.  
 之所以取名“简便PPT引擎”，不是想说它本身很简单，而是希望你使用它的方式非常简便。
 ## quick-start 快速起步
+### step-1 Prepare a template 准备PPT模板
+![demo](docs/images/text-demo.png)
 
+### step-2 Prepare data 准备数据
 ```java
 import io.gitee.jinceon.core.DataSource;
 
@@ -33,6 +36,9 @@ public class HelloPPT {
     }
 }
 ```
+### Screen SnapShot
+![dmeo-output](docs/images/demo-output.png)
+
 ## Design Introduction 设计思路
 [Introduction](docs/INTRODUCTION.md)
 
