@@ -14,16 +14,19 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>aspose-slides</artifactId>
-            <version>20.10</version>
-            <classifier>jdk16</classifier>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-full</artifactId>
+            <version>5.2.3</version>
         </dependency>
         <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>aspose-slides</artifactId>
-            <version>20.10</version>
-            <classifier>javadoc</classifier>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>5.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -47,13 +50,5 @@
             <version>1.2.11</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>AsposeJavaAPI</id>
-            <name>Aspose Java API</name>
-            <url>https://repository.aspose.com/repo/</url>
-        </repository>
-    </repositories>
 
 </project>

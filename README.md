@@ -2,6 +2,8 @@
 named it `simple-ppt-engine` doesnot mean itself is a simple engine,
 but hope the way you use it is simple.  
 之所以取名“简便PPT引擎”，不是想说它本身很简单，而是希望你使用它的方式非常简便。
+## Notice 注意
+不考虑ppt格式，仅支持pptx（未来也不会考虑支持pptx）
 ## quick-start 快速起步
 ### step-1 Prepare a template 准备PPT模板
 ![demo](docs/images/text-demo.png)

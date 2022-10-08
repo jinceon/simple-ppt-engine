@@ -1,10 +1,11 @@
 package io.gitee.jinceon.processor;
 
-import com.aspose.slides.*;
 import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Chart;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xslf.usermodel.XSLFChart;
+import org.apache.poi.xslf.usermodel.XSLFShape;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
@@ -12,27 +13,27 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class ChartDataProcessor implements DataProcessor {
     @Override
-    public boolean supports(IShape shape) {
-        String text = shape.getAlternativeText();
-        return shape instanceof IChart
+    public boolean supports(XSLFShape shape) {
+        String text = "";//shape.getAlternativeText();
+        return shape instanceof Object // XSLFChart
                 && StringUtils.hasText(text)
                 && text.contains("#");
 
     }
 
     @Override
-    public void process(IShape shape, DataSource dataSource) {
-        IChart iChart = (IChart) shape;
+    public void process(XSLFShape shape, DataSource dataSource) {
+//        IChart iChart = (IChart) shape;
         // wps has AlternativeTextTitle and AlternativeText
         // PowerPoint only has AlternativeText
-        String spel = shape.getAlternativeText();
+        String spel = "";//shape.getAlternativeText();
         SpelExpressionParser parser = new SpelExpressionParser();
         Chart chart = (Chart) parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
         log.debug("spel: {}, chart: {}", spel, chart);
         if(chart == null){
             return;
         }
-        IChartData chartData = iChart.getChartData();
+        /*IChartData chartData = iChart.getChartData();
         log.debug("before rendering, iChart series:{}, categories: {}",chartData.getSeries().size(), chartData.getCategories().size());
         IChartDataWorkbook chartDataWorkbook = chartData.getChartDataWorkbook();
         log.debug("spel : {}, template range: {}", spel, chartData.getRange());
@@ -71,6 +72,7 @@ public class ChartDataProcessor implements DataProcessor {
         if(debug) {
             log.debug(MatrixUtil.visual(matrix));
         }
+         */
     }
 
     /**

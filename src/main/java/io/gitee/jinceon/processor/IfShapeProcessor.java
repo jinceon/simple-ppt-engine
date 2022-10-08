@@ -1,10 +1,10 @@
 package io.gitee.jinceon.processor;
 
-import com.aspose.slides.IShape;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.ShapeProcessor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xslf.usermodel.XSLFShape;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
@@ -29,12 +29,12 @@ public class IfShapeProcessor implements ShapeProcessor {
     }
 
     @Override
-    public void process(IShape shape, Object context) {
+    public void process(XSLFShape shape, Object context) {
         if(!Boolean.TRUE.equals(context)){
 //            shape.getSlide().getShapes().remove(shape);
             // 删除和隐藏 肉眼看起来效果似乎一样
-            log.debug("#if=false set shape `{}` invisible", shape.getName());
-            shape.setHidden(true);
+            log.debug("#if=false set shape `{}` invisible", shape.getShapeName());
+            shape.getParent().removeShape(shape);
         }
     }
 }

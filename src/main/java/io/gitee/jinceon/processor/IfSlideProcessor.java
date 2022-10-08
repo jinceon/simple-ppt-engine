@@ -1,10 +1,12 @@
 package io.gitee.jinceon.processor;
 
-import com.aspose.slides.ISlide;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.SlideProcessor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.sl.usermodel.SlideShow;
+import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
@@ -29,10 +31,16 @@ public class IfSlideProcessor implements SlideProcessor {
     }
 
     @Override
-    public void process(ISlide slide, Object context) {
+    public void process(XSLFSlide slide, Object context) {
         if(!Boolean.TRUE.equals(context)){
-            slide.remove();
-            log.debug("#if=false set slide `{}` invisible", slide.getName());
+            log.debug("#if=false remove slide `{}`", slide.getSlideNumber());
+            SlideShow ppt = slide.getSlideShow();
+            if(ppt instanceof XMLSlideShow){
+                XMLSlideShow pptx = (XMLSlideShow) ppt;
+                pptx.removeSlide(slide.getSlideNumber());
+            }else{
+                throw new UnsupportedOperationException("only supports pptx");
+            }
         }
     }
 }

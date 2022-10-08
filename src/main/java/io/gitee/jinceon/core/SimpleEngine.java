@@ -1,38 +1,55 @@
 package io.gitee.jinceon.core;
 
-import com.aspose.slides.*;
 import io.gitee.jinceon.processor.*;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xslf.usermodel.*;
 import org.springframework.util.StringUtils;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 public class SimpleEngine {
     private boolean defaultProcessorsLoaded = false;
     private final List<DataProcessor> dataProcessors = new ArrayList<>();
     private final List<SlideProcessor> slideProcessors = new ArrayList<>();
     private final List<ShapeProcessor> shapeProcessors = new ArrayList<>();
     private DataSource dataSource;
-    private final Presentation presentation;
+    private XMLSlideShow presentation;
 
     public SimpleEngine(String file){
-        this.presentation = new Presentation(file);
+        try {
+            this.presentation = new XMLSlideShow(new FileInputStream(file));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public SimpleEngine(InputStream is){
-        this.presentation = new Presentation(is);
+        try {
+            this.presentation = new XMLSlideShow(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void save(String outputFile){
-        this.presentation.save(outputFile, SaveFormat.Pptx);
+        try {
+            this.presentation.write(new FileOutputStream(outputFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void save(OutputStream os){
-        this.presentation.save(os, SaveFormat.Pptx);
+        try {
+            this.presentation.write(os);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setDataSource(DataSource dataSource){
@@ -86,7 +103,7 @@ public class SimpleEngine {
 
     public void process(){
         loadProcessors();
-        for(ISlide slide: presentation.getSlides().toArray()){
+        for(XSLFSlide slide: presentation.getSlides()){
             //ppt下方备注备注
             String spel = getTextFromNotes(slide);
             int spliter = spel.indexOf("=");
@@ -104,10 +121,10 @@ public class SimpleEngine {
             }
         }
         //不能在同一个循环，因为可能发生slide的增删，已经不是同一批幻灯片了
-        for(ISlide slide:presentation.getSlides().toArray()){
-            IShapeCollection shapes = slide.getShapes();
-            for(IShape shape: shapes.toArray()){
-                String spel = shape.getAlternativeText();
+        for(XSLFSlide slide:presentation.getSlides()){
+            List<XSLFShape> shapes = slide.getShapes();
+            for(XSLFShape shape: shapes){
+                 String spel = "";//shape.getAlternativeText();
                 int spliter = spel.indexOf("=");
                 // spel = “#if = true”，前面至少要有#号+至少一个字符才有意义
                 if(spliter > 2) {
@@ -131,11 +148,20 @@ public class SimpleEngine {
         }
     }
 
-    private static String getTextFromNotes(ISlide slide) {
-        INotesSlide notes = slide.getNotesSlideManager().getNotesSlide();
+    private static String getTextFromNotes(XSLFSlide slide) {
+        XSLFNotes notes = slide.getNotes();
         if(notes == null){
             return "";
         }
-        return notes.getNotesTextFrame().getText();
+        for (XSLFShape shape : notes) {
+            if (shape instanceof XSLFTextShape) {
+                XSLFTextShape txShape = (XSLFTextShape) shape;
+                for (XSLFTextParagraph xslfParagraph : txShape.getTextParagraphs()) {
+                    log.debug("get notes {}", xslfParagraph.getText());
+                    return xslfParagraph.getText();
+                }
+            }
+        }
+        return "";
     }
 }

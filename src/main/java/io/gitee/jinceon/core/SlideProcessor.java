@@ -1,8 +1,8 @@
 package io.gitee.jinceon.core;
 
-import com.aspose.slides.ISlide;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
 
 public interface SlideProcessor extends TemplateProcessor{
 
-    void process(ISlide slide, Object context);
+    void process(XSLFSlide slide, Object context);
 }

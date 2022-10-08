@@ -1,8 +1,8 @@
 package io.gitee.jinceon.core;
 
-import com.aspose.slides.IShape;
+import org.apache.poi.xslf.usermodel.XSLFShape;
 
 public interface ShapeProcessor extends TemplateProcessor{
-    void process(IShape shape, Object context);
+    void process(XSLFShape shape, Object context);
 
 }

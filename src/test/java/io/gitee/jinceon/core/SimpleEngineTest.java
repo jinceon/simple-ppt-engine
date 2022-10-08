@@ -1,6 +1,6 @@
 package io.gitee.jinceon.core;
 
-import com.aspose.slides.IShape;
+import org.apache.poi.xslf.usermodel.XSLFShape;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,12 +35,12 @@ class SimpleEngineTest {
 class MyPreDataProcessor implements DataProcessor {
 
     @Override
-    public boolean supports(IShape shape) {
+    public boolean supports(XSLFShape shape) {
         return false;
     }
 
     @Override
-    public void process(IShape shape, DataSource dataSource) {
+    public void process(XSLFShape shape, DataSource dataSource) {
 
     }
 }
@@ -49,12 +49,12 @@ class MyPreDataProcessor implements DataProcessor {
 class MyPostDataProcessor implements DataProcessor {
 
     @Override
-    public boolean supports(IShape shape) {
+    public boolean supports(XSLFShape shape) {
         return false;
     }
 
     @Override
-    public void process(IShape shape, DataSource dataSource) {
+    public void process(XSLFShape shape, DataSource dataSource) {
 
     }
 }
