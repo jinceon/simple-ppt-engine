@@ -13,9 +13,11 @@
    文本框里的文字、表格里的数据、图表的数据，都属于Data
 
 ## Core Principles 核心原理
-框架将处理器抽象为两类：模板处理器 (TemplateProcessor) 和 数据处理器(DataProcess)。  
+### Processing Order 处理逻辑
 
 ### 处理器
+引擎将处理器抽象为两类：模板处理器 (TemplateProcessor) 和 数据处理器(DataProcess)。
+
 同类型下所有处理器是互斥的，按`@Order`定义的顺序依次匹配，一个对象被匹配上的处理器执行后，不会继续执行其他的同类型处理器。  
 所以同一个slide最多只会被一个SlideProcessor处理，同一个shape只会被最多一个ShapeProcessor和最多一个DataProcessor处理。
 
@@ -39,13 +41,3 @@
 引擎使用SpEL（Spring Expression Language）来设置数据源。  
 比如一个文本框的文本`hello, #{ #name }`，`#{ #name }`表示用变量`name`的值来替换。  
 比如一个表格，需要将其指向一个名为`tableA`的数据源，可以使用`#tableA`。
-
-### Processing Order 处理顺序
-1. 遍历每一张幻灯片
-2. 处理幻灯片
-   1. 读取当前幻灯片的备注，是否包含启用模板处理器（幻灯片处理器）的指令
-   2. 如果有，依次执行每一个幻灯片处理器（todo 或只执行指令对应的处理器）
-3. 扫描当前幻灯片的所有形状
-   1. 过滤掉不含指令的形状
-   2. 对形状依次执行每一个形状处理器（todo 或只执行指令对应的处理器）
-   3. 对形状依次执行每一个数据处理器

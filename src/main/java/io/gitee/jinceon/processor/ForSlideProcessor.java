@@ -1,13 +1,15 @@
 package io.gitee.jinceon.processor;
 
-import com.aspose.slides.*;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.SlideProcessor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.sl.usermodel.*;
+import org.apache.poi.xslf.usermodel.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,10 +41,16 @@ public class ForSlideProcessor implements SlideProcessor {
      * @param context Pagination{collection=#user, empty=0|1|2}
      */
     @Override
-    public void process(ISlide slide, Object context) {
+    public void process(XSLFSlide slide, Object context) {
+        SlideShow ppt = slide.getSlideShow();
+        if(!(ppt instanceof XMLSlideShow)){
+            throw new UnsupportedOperationException("only supports pptx");
+        }
+        XMLSlideShow pptx = (XMLSlideShow) ppt;
+
         if(context == null){
             log.debug("#for=null delete slide");
-            slide.remove();
+            pptx.removeSlide(slide.getSlideNumber()-1);
             return;
         }
         int size = 0;
@@ -55,36 +63,37 @@ public class ForSlideProcessor implements SlideProcessor {
         }
         if(size == 0){
             log.debug("#for=( a empty object) delete slide");
-            slide.remove();
+            pptx.removeSlide(slide.getSlideNumber()-1);
             return;
         }
         log.debug("#for=[ {} item{} ], insert {} clone slide{}", size, size>1?"s":"", size-1, size>2?"s":"");
         int number = slide.getSlideNumber();
         for (int page = 1; page < size; page++) {
             // 自身占了一张幻灯片，只需复制 size-1 张
-            ISlide cloned = slide.getPresentation().getSlides().insertClone(number+page-1, slide);
+            Slide cloned = copy(number+page-1, slide);
+
             replaceIndex(cloned, page+"");
         }
         replaceIndex(slide, "0");//自身的下标也要换，并且要最后，不然复制的就不是#_index_，就没法替换下标了
     }
 
-    private static void replaceIndex(ISlide slide, String pageIndex){
-        IShapeCollection shapes = slide.getShapes();
-        for (IShape shape : shapes.toArray()) {
-            if (shape instanceof IAutoShape) {
-                IAutoShape text = (IAutoShape) shape;
-                ITextFrame textFrame = text.getTextFrame();
-                IParagraphCollection paragraphs = textFrame.getParagraphs();
-                for (int i = 0; i < paragraphs.getCount(); i++) {
-                    IParagraph paragraph = paragraphs.get_Item(i);
-                    IPortionCollection portions = paragraph.getPortions();
-                    for (int j = 0; j < portions.getCount(); j++) {
-                        IPortion portion = portions.get_Item(j);
-                        portion.setText(StringUtils.replace(portion.getText(), INDEX_PLACEHOLDER, pageIndex));
-                    }
-                }
-            } else {
-                shape.setAlternativeText(StringUtils.replace(shape.getAlternativeText(), INDEX_PLACEHOLDER, pageIndex));
+    private static Slide copy(int index, XSLFSlide slide){
+        XSLFSlide newSlide = slide.getSlideShow().createSlide();
+        newSlide.importContent(slide);
+        newSlide.getSlideShow().setSlideOrder(newSlide, index);
+        return newSlide;
+    }
+
+    private static void replaceIndex(Slide slide, String pageIndex){
+        List<Shape> shapes = slide.getShapes();
+        for (Shape shape : shapes) {
+            if (shape instanceof AutoShape) {
+                AutoShape text = (AutoShape) shape;
+                text.setText(StringUtils.replace(text.getText(), INDEX_PLACEHOLDER, pageIndex));
+            } else if (shape instanceof XSLFShape){
+                XSLFShape shape1 = (XSLFShape) shape;
+                ShapeHelper.setAlternativeText(shape1,
+                        StringUtils.replace(ShapeHelper.getAlternativeText(shape1), INDEX_PLACEHOLDER, pageIndex));
             }
         }
     }

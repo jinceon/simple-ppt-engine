@@ -1,13 +1,16 @@
 package io.gitee.jinceon.processor;
 
-import com.aspose.slides.*;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.ShapeProcessor;
 import io.gitee.jinceon.core.Table;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xslf.usermodel.XSLFShape;
+import org.apache.poi.xslf.usermodel.XSLFTable;
+import org.apache.poi.xslf.usermodel.XSLFTableRow;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * #for = items
@@ -34,41 +37,41 @@ public class ForShapeProcessor implements ShapeProcessor {
     }
 
     @Override
-    public void process(IShape shape, Object context) {
-        if(!(shape instanceof ITable)){
-            throw new UnsupportedOperationException("only supports `Table` currently");
+    public void process(XSLFShape shape, Object context) {
+        if(!(shape instanceof XSLFTable)){
+            throw new UnsupportedOperationException("only supports `pptx Table` currently, `ppt Table` is under construction");
         }
         if(!(context instanceof Table)){
             throw new IllegalArgumentException("please use `Table.class`");
         }
-        ITable iTable = (ITable) shape;
+        XSLFTable iTable = (XSLFTable) shape;
         Table table = (Table) context;
-        IRowCollection uiRows = iTable.getRows();
-        IColumnCollection uiCols = iTable.getColumns();
+        List<XSLFTableRow> uiRows = iTable.getRows();
+        int cols = iTable.getNumberOfColumns();
         int rowDifference = uiRows.size() - table.getRowCount();
-        int colDifference = uiCols.size() - table.getColumnCount();
-        IRow templateRow = uiRows.get_Item(uiRows.size() -1);
-        IColumn templateCol = uiCols.get_Item(uiCols.size() -1);
+        int colDifference = cols - table.getColumnCount();
         while(rowDifference < 0){
             // ui + row
-            uiRows.addClone(templateRow, false);
+            // iTable.addRow(); // 加的是一个空行
+            iTable.insertRow(iTable.getNumberOfRows());
             rowDifference++;
             log.debug("ui行不够，加一行");
         }
         while(rowDifference > 0){
             // ui - row
-            uiRows.removeAt(rowDifference--, false);
+            iTable.removeRow(rowDifference--);
             log.debug("ui行多了，删一行");
         }
         while(colDifference < 0){
             // ui + col
-            uiCols.addClone(templateCol, false);
+            // iTable.addColumn(); // 加的是一个空列
+            iTable.insertColumn(iTable.getNumberOfColumns());
             colDifference++;
             log.debug("ui列不够，加一列");
         }
         while(colDifference > 0){
             // ui - col
-            uiCols.removeAt(colDifference--, false);
+            iTable.removeColumn(colDifference--);
             log.debug("ui列多了，删一列");
         }
         // 把`可选文字`里的 `#for = #table` 里的指令部分 `#for = `去掉。
