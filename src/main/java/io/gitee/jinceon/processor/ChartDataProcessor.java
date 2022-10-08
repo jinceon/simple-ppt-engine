@@ -4,8 +4,7 @@ import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Chart;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.xslf.usermodel.XSLFChart;
-import org.apache.poi.xslf.usermodel.XSLFShape;
+import org.apache.poi.xslf.usermodel.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
@@ -14,8 +13,9 @@ import org.springframework.util.StringUtils;
 public class ChartDataProcessor implements DataProcessor {
     @Override
     public boolean supports(XSLFShape shape) {
-        String text = "";//shape.getAlternativeText();
-        return shape instanceof Object // XSLFChart
+        String text = ShapeHelper.getAlternativeText(shape);
+        return shape instanceof XSLFGraphicFrame
+                && !(shape instanceof XSLFTable)
                 && StringUtils.hasText(text)
                 && text.contains("#");
 
@@ -26,7 +26,7 @@ public class ChartDataProcessor implements DataProcessor {
 //        IChart iChart = (IChart) shape;
         // wps has AlternativeTextTitle and AlternativeText
         // PowerPoint only has AlternativeText
-        String spel = "";//shape.getAlternativeText();
+        String spel = ShapeHelper.getAlternativeText(shape);
         SpelExpressionParser parser = new SpelExpressionParser();
         Chart chart = (Chart) parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
         log.debug("spel: {}, chart: {}", spel, chart);

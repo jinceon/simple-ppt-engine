@@ -103,7 +103,7 @@ public class SimpleEngine {
 
     public void process(){
         loadProcessors();
-        for(XSLFSlide slide: presentation.getSlides()){
+        for(XSLFSlide slide: new ArrayList<>(presentation.getSlides())){
             //ppt下方备注备注
             String spel = getTextFromNotes(slide);
             int spliter = spel.indexOf("=");
@@ -122,9 +122,9 @@ public class SimpleEngine {
         }
         //不能在同一个循环，因为可能发生slide的增删，已经不是同一批幻灯片了
         for(XSLFSlide slide:presentation.getSlides()){
-            List<XSLFShape> shapes = slide.getShapes();
+            List<XSLFShape> shapes = new ArrayList<>(slide.getShapes());
             for(XSLFShape shape: shapes){
-                 String spel = "";//shape.getAlternativeText();
+                 String spel = ShapeHelper.getAlternativeText(shape);
                 int spliter = spel.indexOf("=");
                 // spel = “#if = true”，前面至少要有#号+至少一个字符才有意义
                 if(spliter > 2) {

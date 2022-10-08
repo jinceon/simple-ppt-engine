@@ -5,9 +5,7 @@ import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.SlideProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.sl.usermodel.*;
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFSheet;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.apache.poi.xslf.usermodel.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
@@ -52,7 +50,7 @@ public class ForSlideProcessor implements SlideProcessor {
 
         if(context == null){
             log.debug("#for=null delete slide");
-            pptx.removeSlide(slide.getSlideNumber());
+            pptx.removeSlide(slide.getSlideNumber()-1);
             return;
         }
         int size = 0;
@@ -65,7 +63,7 @@ public class ForSlideProcessor implements SlideProcessor {
         }
         if(size == 0){
             log.debug("#for=( a empty object) delete slide");
-            pptx.removeSlide(slide.getSlideNumber());
+            pptx.removeSlide(slide.getSlideNumber()-1);
             return;
         }
         log.debug("#for=[ {} item{} ], insert {} clone slide{}", size, size>1?"s":"", size-1, size>2?"s":"");
@@ -82,6 +80,7 @@ public class ForSlideProcessor implements SlideProcessor {
     private static Slide copy(int index, XSLFSlide slide){
         XSLFSlide newSlide = slide.getSlideShow().createSlide();
         newSlide.importContent(slide);
+        newSlide.getSlideShow().setSlideOrder(newSlide, index);
         return newSlide;
     }
 
@@ -91,8 +90,10 @@ public class ForSlideProcessor implements SlideProcessor {
             if (shape instanceof AutoShape) {
                 AutoShape text = (AutoShape) shape;
                 text.setText(StringUtils.replace(text.getText(), INDEX_PLACEHOLDER, pageIndex));
-            } else {
-                //shape.setAlternativeText(StringUtils.replace(shape.getAlternativeText(), INDEX_PLACEHOLDER, pageIndex));
+            } else if (shape instanceof XSLFShape){
+                XSLFShape shape1 = (XSLFShape) shape;
+                ShapeHelper.setAlternativeText(shape1,
+                        StringUtils.replace(ShapeHelper.getAlternativeText(shape1), INDEX_PLACEHOLDER, pageIndex));
             }
         }
     }
