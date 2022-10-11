@@ -3,7 +3,7 @@ named it `simple-ppt-engine` doesnot mean itself is a simple engine,
 but hope the way you use it is simple.  
 之所以取名“简便PPT引擎”，不是想说它本身很简单，而是希望你使用它的方式非常简便。
 ## Notice 注意
-不考虑ppt格式，仅支持pptx（未来也不会考虑支持pptx）
+不考虑ppt格式，仅支持pptx（未来也不会考虑支持ppt）
 ## quick-start 快速起步
 ### step-1 Prepare a template 准备PPT模板
 ![demo](docs/images/text-demo.png)
@@ -79,8 +79,8 @@ we just manipulate the data table nested in the shape.
 3. use `addProcess()` to add your processor into engine's processors list. 加入到引擎的处理器列表。
 
 ## RoadMap 产品蓝图
-- [dynamic style 动态样式](docs/roadmap/dynamic-style.md)
-- apache poi implementation 用开源的apache poi替换掉商业闭源的aspose
+- [ ] [dynamic style 动态样式](docs/roadmap/dynamic-style.md)
+- [x] apache poi implementation 用开源的apache poi替换掉商业闭源的aspose
 
 ## Todo 待办
 - unit test and coverage 单元测试及代码覆盖率

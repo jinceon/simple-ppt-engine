@@ -4,7 +4,6 @@ import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Table;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.sl.usermodel.TableShape;
 import org.apache.poi.xslf.usermodel.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
