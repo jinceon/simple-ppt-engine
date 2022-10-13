@@ -31,8 +31,8 @@ public class IfShapeProcessor implements ShapeProcessor {
     @Override
     public void process(XSLFShape shape, Object context) {
         if(!Boolean.TRUE.equals(context)){
-//            shape.getSlide().getShapes().remove(shape);
-            // 删除和隐藏 肉眼看起来效果似乎一样
+            // aspose 删除和隐藏 肉眼看起来效果似乎一样
+            // 但poi 没有隐藏。remove后会导致data processor阶段的shape丢失，只能重新一次新的循环
             log.debug("#if=false set shape `{}` invisible", shape.getShapeName());
             shape.getParent().removeShape(shape);
         }

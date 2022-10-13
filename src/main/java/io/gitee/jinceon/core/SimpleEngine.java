@@ -138,8 +138,12 @@ public class SimpleEngine {
                         }
                     }
                 }
-                for(DataProcessor dataProcessor: this.dataProcessors){
-                    if(dataProcessor.supports(shape)) {
+            }
+            // poi 无法隐藏shape。remove后会导致data processor阶段的shape丢失，只能重新一次新的循环
+            List<XSLFShape> shapesAfterShapeProcess = slide.getShapes();
+            for(XSLFShape shape: shapesAfterShapeProcess) {
+                for (DataProcessor dataProcessor : this.dataProcessors) {
+                    if (dataProcessor.supports(shape)) {
                         dataProcessor.process(shape, this.dataSource);
                         break;
                     }

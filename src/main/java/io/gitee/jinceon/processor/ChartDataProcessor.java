@@ -13,11 +13,14 @@ import org.springframework.util.StringUtils;
 public class ChartDataProcessor implements DataProcessor {
     @Override
     public boolean supports(XSLFShape shape) {
+        if(!(shape instanceof XSLFGraphicFrame)){
+            return false;
+        }
+        if(shape instanceof XSLFTable){
+            return false;
+        }
         String text = ShapeHelper.getAlternativeText(shape);
-        return shape instanceof XSLFGraphicFrame
-                && !(shape instanceof XSLFTable)
-                && StringUtils.hasText(text)
-                && text.contains("#");
+        return StringUtils.hasText(text) && text.contains("#");
 
     }
 

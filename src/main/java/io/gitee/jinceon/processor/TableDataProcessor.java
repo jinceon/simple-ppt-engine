@@ -16,10 +16,11 @@ import java.util.List;
 public class TableDataProcessor implements DataProcessor {
     @Override
     public boolean supports(XSLFShape shape) {
+        if(!(shape instanceof XSLFTable)){
+            return false;
+        }
         String text = ShapeHelper.getAlternativeText(shape);
-        return shape instanceof XSLFTable
-                && StringUtils.hasText(text)
-                && text.contains("#");
+        return StringUtils.hasText(text) && text.contains("#");
     }
 
     @Override
