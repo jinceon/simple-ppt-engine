@@ -40,7 +40,7 @@ public class SimpleEngine {
         try {
             this.presentation.write(new FileOutputStream(outputFile));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("write to file failed", e);
         }
     }
 

@@ -4,9 +4,22 @@ import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Chart;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xddf.usermodel.chart.XDDFChartData;
+import org.apache.poi.xddf.usermodel.chart.XDDFDataSource;
+import org.apache.poi.xddf.usermodel.chart.XDDFDataSourcesFactory;
+import org.apache.poi.xddf.usermodel.chart.XDDFNumericalDataSource;
 import org.apache.poi.xslf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.util.List;
 
 @Order(70)
 @Slf4j
@@ -26,7 +39,7 @@ public class ChartDataProcessor implements DataProcessor {
 
     @Override
     public void process(XSLFShape shape, DataSource dataSource) {
-//        IChart iChart = (IChart) shape;
+        XSLFChart iChart = ((XSLFGraphicFrame)shape).getChart();
         // wps has AlternativeTextTitle and AlternativeText
         // PowerPoint only has AlternativeText
         String spel = ShapeHelper.getAlternativeText(shape);
@@ -36,67 +49,93 @@ public class ChartDataProcessor implements DataProcessor {
         if(chart == null){
             return;
         }
-        /*IChartData chartData = iChart.getChartData();
-        log.debug("before rendering, iChart series:{}, categories: {}",chartData.getSeries().size(), chartData.getCategories().size());
-        IChartDataWorkbook chartDataWorkbook = chartData.getChartDataWorkbook();
-        log.debug("spel : {}, template range: {}", spel, chartData.getRange());
+        List<XDDFChartData> chartSeries = iChart.getChartSeries();
+        if(chartSeries.size() > 1){
+            log.warn("暂不支持组合图表");
+            return;
+        }
+        XSSFWorkbook chartDataWorkbook = null;
+        try {
+            chartDataWorkbook = iChart.getWorkbook();
+        } catch (IOException e) {
+            log.error("I/O exception", e);
+        } catch (InvalidFormatException e) {
+            log.error("invalid format", e);
+        }
         int workSheetIndex = 0;
         int seriesRow = 0;
         int categoriesColumn = 0;
         String[] categories = chart.getCategories();
         Chart.Pair[] series = chart.getSeries();
+        XSSFSheet sheet = chartDataWorkbook.getSheetAt(workSheetIndex);
+        log.debug("before rendering, spel : {}, template range: {}", spel, sheet.getDimension().formatAsString());
+        CellRangeAddress newRange = new CellRangeAddress(0, categories.length, 0, series.length);
+        sheet.setDimensionOverride(newRange);
+        log.debug("spel: {}, new range: {}",spel, newRange.formatAsString());
+        makesureRange(sheet, newRange);
         boolean debug = log.isDebugEnabled();
         Object[][] matrix = new Object[0][];
         if(debug){
             matrix = new Object[categories.length+1][series.length+1];
         }
         for (int row = 0; row < categories.length; row++) {
-            chartDataWorkbook.getCell(workSheetIndex, row+1, categoriesColumn).setValue(categories[row]);
+            sheet.getRow(row+1).getCell(categoriesColumn).setCellValue(categories[row]);
             if(debug){
                 matrix[row+1][categoriesColumn] = categories[row];
             }
         }
         for (int col = 0; col < series.length; col++) {
-            chartDataWorkbook.getCell(workSheetIndex, seriesRow, col+1).setValue(series[col].getLabel());
+            sheet.getRow(seriesRow).getCell(col+1).setCellValue(series[col].getLabel());
             if(debug){
                 matrix[seriesRow][col+1] = series[col].getLabel();
             }
         }
-        Object[][] data = chart.getData();
+        Double[][] data = chart.getData();
         for (int row = 0; row < categories.length; row++) {
             for (int col = 0; col < series.length; col++) {
-                chartDataWorkbook.getCell(workSheetIndex, row+1, col+1).setValue(data[row][col]);
+                sheet.getRow(row+1).getCell(col+1).setCellValue(data[row][col]);
                 matrix[row+1][col+1]=data[row][col];
             }
         }
-        String newRange = String.format("Sheet1!$A$1:$%s$%d", number2Char(series.length+1) , categories.length +1);
-        log.debug("spel: {}, new range: {}",spel, newRange);
-        chartData.setRange(newRange);
         if(debug) {
             log.debug(MatrixUtil.visual(matrix));
         }
-         */
-    }
+        XDDFChartData chartData = iChart.getChartSeries().get(0);//暂不支持复合图表
+        int seriesCount = chartData.getSeriesCount();
+        for(int i=0;i<seriesCount-series.length;i++){
+            chartData.removeSeries(0);//清空模板里多余的旧数据。for循环在list
+        }
+        XDDFDataSource cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
+                new CellRangeAddress(1, categories.length, 0, 0));
 
-    /**
-     * excel的列用字母表示，A-Z分别表示第1-26列，AA-AZ分别表示第27-52列
-     * 将列的数字表示法转成字母表示法
-     *
-     * @param n 1,27
-     * @return s A,AA
-     */
-    private String number2Char(int n) {
-        String str = "";
-        while (n > 0) {
-            int rem = n % 26;
-            if (rem == 0) {
-                str += "Z";
-                n = (n / 26) - 1;
-            } else {
-                str += (char) ((rem - 1) + 'A');
-                n = n / 26;
+        for(int s=0; s< series.length; s++) {
+            XDDFNumericalDataSource val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
+                    new CellRangeAddress(1, categories.length, s+1, s+1));
+            if(s>=seriesCount){
+                chartData.addSeries(cat2, val2);
+            }else {
+                chartData.getSeries(s).replaceData(cat2, val2);
             }
         }
-        return str;
+        iChart.plot(chartData);
+    }
+
+    private void makesureRange(XSSFSheet sheet, CellRangeAddress range) {
+        int firstRow = range.getFirstRow();
+        int firstColumn = range.getFirstColumn();
+        int lastRow = range.getLastRow();
+        int lastColumn = range.getLastColumn();
+        for (int rowIn = firstRow; rowIn <= lastRow; rowIn++) {
+            for (int colIn = firstColumn; colIn <= lastColumn; colIn++) {
+                XSSFRow row = sheet.getRow(rowIn);
+                if (row == null) {
+                    row = sheet.createRow(rowIn);
+                }
+                XSSFCell cell = row.getCell(colIn);
+                if (cell == null) {
+                    row.createCell(colIn);
+                }
+            }
+        }
     }
 }
