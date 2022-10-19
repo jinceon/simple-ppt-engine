@@ -37,7 +37,7 @@ public class IfSlideProcessor implements SlideProcessor {
             SlideShow ppt = slide.getSlideShow();
             if(ppt instanceof XMLSlideShow){
                 XMLSlideShow pptx = (XMLSlideShow) ppt;
-                pptx.removeSlide(slide.getSlideNumber());
+                pptx.removeSlide(slide.getSlideNumber()-1);
             }else{
                 throw new UnsupportedOperationException("only supports pptx");
             }

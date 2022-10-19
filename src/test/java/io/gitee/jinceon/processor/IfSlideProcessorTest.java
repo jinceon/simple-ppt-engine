@@ -3,16 +3,23 @@ package io.gitee.jinceon.processor;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
 import io.gitee.jinceon.processor.data.User;
+import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFAutoShape;
+import org.apache.poi.xslf.usermodel.XSLFShape;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 class IfSlideProcessorTest {
 
     @Test
-    void process() {
+    void process() throws IOException {
         SimpleEngine engine = new SimpleEngine("src/test/resources/if-slide.pptx");
         DataSource dataSource = new DataSource();
         List users = new ArrayList<>();
@@ -22,7 +29,15 @@ class IfSlideProcessorTest {
         dataSource.setVariable("users2", new ArrayList<>());
         engine.setDataSource(dataSource);
         engine.process();
-        engine.save("src/test/resources/test-if-slide.pptx");
+        String outputfile = "src/test/resources/test-if-slide.pptx";
+        engine.save(outputfile);
+
+        XMLSlideShow outputPpt = new XMLSlideShow(new FileInputStream(outputfile));
+        List<XSLFSlide> slides = outputPpt.getSlides();
+        Assertions.assertEquals(1, slides.size());
+        List<XSLFShape> shapes = slides.get(0).getShapes();
+        String text = ((XSLFAutoShape)(shapes.get(1))).getText();
+        Assertions.assertEquals("你好，jinceon", text);
     }
 
     @Test
