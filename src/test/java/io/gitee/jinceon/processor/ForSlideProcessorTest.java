@@ -43,7 +43,7 @@ class ForSlideProcessorTest {
 
         String[] categories = counts.stream().map(AgeCount::getAgeRange).collect(Collectors.toList()).toArray(new String[0]);
         Chart.Pair[] series = new Chart.Pair[]{
-                new Chart.Pair("年龄区间", "ageRange"),
+//                new Chart.Pair("年龄区间", "ageRange"),
                 new Chart.Pair("数量", "count")
         };
         Chart chart = new Chart(categories, series);
