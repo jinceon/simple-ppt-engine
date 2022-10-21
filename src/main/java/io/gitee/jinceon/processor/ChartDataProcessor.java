@@ -6,6 +6,7 @@ import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xddf.usermodel.chart.XDDFChartData;
 import org.apache.poi.xddf.usermodel.chart.XDDFDataSource;
 import org.apache.poi.xddf.usermodel.chart.XDDFDataSourcesFactory;
@@ -33,7 +34,7 @@ public class ChartDataProcessor implements DataProcessor {
             return false;
         }
         String text = ShapeHelper.getAlternativeText(shape);
-        return StringUtils.hasText(text) && text.contains("#");
+        return StringUtils.hasText(text) && text.contains("#") && text.equals("#pages[0]['chart']");
 
     }
 
@@ -107,17 +108,28 @@ public class ChartDataProcessor implements DataProcessor {
         }
         XDDFDataSource cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
                 new CellRangeAddress(1, categories.length, 0, 0));
-
+        log.debug("category range: {}", cat2.getDataRangeReference());
         for(int s=0; s< series.length; s++) {
             XDDFNumericalDataSource val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
                     new CellRangeAddress(1, categories.length, s+1, s+1));
+            log.debug("series {} range: {}", s, val2.getDataRangeReference());
             if(s>=seriesCount){
-                chartData.addSeries(cat2, val2);
+                XDDFChartData.Series series1 = chartData.addSeries(cat2, val2);
+                series1.setTitle(series[s].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(s+1)));
             }else {
-                chartData.getSeries(s).replaceData(cat2, val2);
+                XDDFChartData.Series series1 = chartData.getSeries(s);
+                series1.setTitle(series[s].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(s+1)));
+                series1.replaceData(cat2, val2);
             }
         }
         iChart.plot(chartData);
+        try {
+            log.debug("after plot range: {}", iChart.getWorkbook().getSheetAt(workSheetIndex).getDimension().formatAsString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidFormatException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void makesureRange(XSSFSheet sheet, CellRangeAddress range) {
