@@ -63,7 +63,7 @@ public class Table {
     }
 
     /**
-     * 将一个 List<Entity> 转换为 Object[][], 其中 Entity/Map 转成 Object[] 的时候按headers的顺序
+     * 将一个 List 转换为 Object[][], 其中 Entity/Map 转成 Object[] 的时候按headers的顺序
      * @param headers iterate properties(keys) of entity(map) to Object[] in specified order
      * @param list to be converted to Object[][]
      */
@@ -99,7 +99,7 @@ public class Table {
     }
 
     /**
-     * 将一个 List<Entity> 转换为 Object[][], 其中 Entity/Map 转成 Object[] 的时候按headers的顺序
+     * 将一个 List 转换为 Object[][], 其中 Entity/Map 转成 Object[] 的时候按headers的顺序
      * @param headers iterate properties(keys) of entity(map) to Object[] in specified order
      * @param list to be converted to Object[][]
      * @param direction HORIZONTAL, VERTICAL

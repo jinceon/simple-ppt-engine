@@ -8,7 +8,16 @@ but hope the way you use it is simple.
 ### step-1 Prepare a template 准备PPT模板
 ![demo](docs/images/text-demo.png)
 
-### step-2 Prepare data 准备数据
+### step-2 Add Dependency into Pom.xml 在Pom.xml引入依赖
+```xml
+<dependency>
+    <groupId>io.gitee.jinceon</groupId>
+    <artifactId>simple-ppt-engine</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+### Prepare data and code 准备数据和代码
 ```java
 import io.gitee.jinceon.core.DataSource;
 
