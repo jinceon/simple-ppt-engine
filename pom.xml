@@ -6,11 +6,11 @@
 
     <groupId>io.gitee.jinceon</groupId>
     <artifactId>simple-ppt-engine</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <!--项目信息...-->
-    <name>easy-es-parent</name>
-    <description>easy use for elastic search</description>
-    <url>https://github.com/xpc1024/easy-es</url>
+    <name>simple-ppt-engine</name>
+    <description>easy use for pptx edit</description>
+    <url>https://gitee.com/jinceon/simple-ppt-engine</url>
 
     <!--开源协议...-->
     <licenses>
