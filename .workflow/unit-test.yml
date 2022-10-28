@@ -1,0 +1,38 @@
+version: '1.0'
+name: unit-test
+displayName: unit-test
+triggers:
+  trigger: auto
+  push:
+    tags:
+      prefix:
+        - ''
+stages:
+  - name: stage-a0dc720a
+    displayName: 未命名
+    strategy: naturally
+    trigger: auto
+    executor: []
+    steps:
+      - step: ut@maven
+        name: unit_test_maven
+        displayName: Maven 单元测试
+        jdkVersion: '8'
+        mavenVersion: 3.6.3
+        commands:
+          - '# Maven单元测试默认命令'
+          - mvn -B test -Dmaven.test.failure.ignore=true
+          - mvn surefire-report:report-only
+          - mvn site -DgenerateReports=false
+        report:
+          path: ./target/site
+          index: surefire-report.html
+        checkpoints: []
+        settings: []
+        caches:
+          - ~/.m2
+        notify: []
+        strategy:
+          retry: '0'
+strategy:
+  blocking: true
