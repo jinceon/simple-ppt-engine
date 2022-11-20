@@ -41,3 +41,9 @@
 引擎使用SpEL（Spring Expression Language）来设置数据源。  
 比如一个文本框的文本`hello, #{ #name }`，`#{ #name }`表示用变量`name`的值来替换。  
 比如一个表格，需要将其指向一个名为`tableA`的数据源，可以使用`#tableA`。
+
+## 关于分页（#for指令）的设计
+[for指令](directive/for.md)
+
+## 关于样式的设想（草稿）
+[动态样式](roadmap/dynamic-style.md)
