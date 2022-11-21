@@ -35,6 +35,34 @@ deleteWhenEmpty=true是如果数据列表为空，要不要把整个表格删除
 几乎所有的编程语言在做语法结构设计的时候，绕不开的2个关键逻辑：if和for。  
 我的设计，能不能也做到，仅用if和for即可实现分页、删除（列表为空时）？  
 
-最终采用的方案是从幻灯片复制入手。
-如果有40条数据，每个表格放10行，那么需要4个表格。每页ppt放一个表格的话，需要4页ppt。
-在【幻灯片】上用for标签循环复制出4页幻灯片，然后每个幻灯片的表格上用for标签动态渲染。
+如果用if和for来实现，可以很轻松地实现slide(幻灯片)和shape(形状)的显示隐藏及分页。    
+如果有40条数据，每个表格放10行（因幻灯片的宽高是固定的，受界面排版、文字大小等限制，能展示的最大表格行数肯定也是确定的），那么需要4个表格。   
+每页ppt放一个表格的话，需要4页ppt。
+在【幻灯片】上用for标签循环复制出4页幻灯片，然后每个幻灯片的表格上用for标签动态渲染。  
+伪代码大概逻辑是
+```
+1. 查询数据
+List users = findUsers();  //假设users.size() = 40
+
+2. 事先分好页
+List pages = new ArrayList(); // 循环分页
+int tablePageSize = 10;
+for( int i=0,s=users.size(); i <= s; i=i+tablePageSize ) { 
+    pages[i] = new HashMap();
+    pages[i].put("tableA", users.sublist(i*tablePageSize, (i+1)*tablePageSize );
+}
+// 参考src/test/java/io/gitee/jinceon/processor/ForSlideProcessorTest.java
+for循环后，pages的结果是
+pages[0].tableA = users[10..19];
+pages[1].tableA = users[10..19];
+pages[2].tableA = users[20..29];
+pages[3].tableA = users[31..40];
+
+3. 渲染到ppt上
+#for = pages                  // 幻灯片上根据pages的页数自动复制分页，pages有4个元素，分4页ppt
+#for = #pages[#_index_]['tableA']   // #_index_是固定占位符，会根据实际的下标自动替换为 #pages[0]、#pages[1]等
+                                    // 就变成了 #pages[0].tableA，再根据每页ppt里的tableA渲染表格
+```
+
+乍一看，似乎需要开发人员自己去事先做手工分页，有点繁琐。  
+但这个设计总体来说是一个很简单很清晰很易懂的设计。如有建议，请不吝赐教。
