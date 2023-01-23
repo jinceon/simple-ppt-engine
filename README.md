@@ -34,7 +34,7 @@ but hope the way you use it is simple.
    engine.render(pptFile, data); // 最开始的设想
 ```
 当时我是提了这个设想，我的团队小伙伴也实现了一版。   
-但是我觉得实现的不优雅（后续会更新说明，两种设计）。   
+但是我觉得实现的不优雅（~~后续会更新说明，两种设计~~参见[创建背景](./docs/background.md)）。   
 想着我不能光BB，于是，就有了本项目。
 
 ## Notice 注意
