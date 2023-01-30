@@ -1,15 +1,20 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.template.shape;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.SlideProcessor;
+import io.gitee.jinceon.core.template.slide.SlideProcessor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.sl.usermodel.*;
-import org.apache.poi.xslf.usermodel.*;
+import org.apache.poi.sl.usermodel.AutoShape;
+import org.apache.poi.sl.usermodel.Shape;
+import org.apache.poi.sl.usermodel.Slide;
+import org.apache.poi.sl.usermodel.SlideShow;
+import org.apache.poi.xslf.usermodel.ShapeHelper;
+import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFShape;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,8 +42,6 @@ public class ForSlideProcessor implements SlideProcessor {
 
     /**
      * 将 slide 里所有shape的 #users[#_index_] 替换成 #users[0] #user[1]等下标
-     * @param slide
-     * @param context Pagination{collection=#user, empty=0|1|2}
      */
     @Override
     public void process(XSLFSlide slide, Object context) {
@@ -55,11 +58,9 @@ public class ForSlideProcessor implements SlideProcessor {
         }
         int size = 0;
         if(context instanceof List){
-            List list = (List) context;
-            size = list.size();
+            size = ((List) context).size();
         }else if(context instanceof Object[] ){
-            Object[] array = (Object[]) context;
-            size = array.length;
+            size = ((Object[]) context).length;
         }
         if(size == 0){
             log.debug("#for=( a empty object) delete slide");

@@ -1,6 +1,7 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.data;
 
-import io.gitee.jinceon.core.*;
+import io.gitee.jinceon.core.DataSource;
+import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.Table;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class TableDataProcessor implements DataProcessor {
         if(log.isDebugEnabled()) {
             for (int row = 0; row < rows.size(); row++) {
                 XSLFTableRow iRow = rows.get(row);
-                ui.append(row + "\t");
+                ui.append(String.valueOf(row)).append("\t");
                 List<XSLFTableCell> cells = iRow.getCells();
                 for (XSLFTableCell cell: cells) {
                     ui.append(cell.getText()).append("\t");
@@ -66,7 +67,7 @@ public class TableDataProcessor implements DataProcessor {
         sw.append(" writing data to table ").append(spel).append("\n");
         for (int row = 0; row < tableData.length; row++) {
             XSLFTableRow iRow = rows.get(row);
-            sw.append(row + "\t");
+            sw.append(String.valueOf(row)).append("\t");
             for (int col = 0; col < tableData[row].length; col++) {
                 List<XSLFTableCell> cells = iRow.getCells();
                 XSLFTableCell cell = cells.get(col);

@@ -4,12 +4,17 @@ import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
 import io.gitee.jinceon.core.Table;
 import io.gitee.jinceon.processor.data.Trend;
-import org.apache.poi.xslf.usermodel.*;
+import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFShape;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.apache.poi.xslf.usermodel.XSLFTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +50,7 @@ class ForShapeProcessorTest {
         String outputfile = "src/test/resources/test-for-shape.pptx";
         engine.save(outputfile);
 
-        XMLSlideShow outputPpt = new XMLSlideShow(new FileInputStream(outputfile));
+        XMLSlideShow outputPpt = new XMLSlideShow(Files.newInputStream(Paths.get(outputfile)));
         List<XSLFSlide> slides = outputPpt.getSlides();
         for(int page=1;page<slides.size();page++){
             List<XSLFShape> shapes = slides.get(page).getShapes();

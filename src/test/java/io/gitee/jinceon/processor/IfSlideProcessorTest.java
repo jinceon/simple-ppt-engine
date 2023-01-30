@@ -2,6 +2,7 @@ package io.gitee.jinceon.processor;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
+import io.gitee.jinceon.core.template.slide.IfSlideProcessor;
 import io.gitee.jinceon.processor.data.User;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFAutoShape;
@@ -10,9 +11,9 @@ import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ class IfSlideProcessorTest {
     void process() throws IOException {
         SimpleEngine engine = new SimpleEngine("src/test/resources/if-slide.pptx");
         DataSource dataSource = new DataSource();
-        List users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         users.add(new User("jinceon"));
         dataSource.setVariable("users", users);
         dataSource.setVariable("users1", null);
@@ -32,7 +33,7 @@ class IfSlideProcessorTest {
         String outputfile = "src/test/resources/test-if-slide.pptx";
         engine.save(outputfile);
 
-        XMLSlideShow outputPpt = new XMLSlideShow(new FileInputStream(outputfile));
+        XMLSlideShow outputPpt = new XMLSlideShow(Files.newInputStream(Paths.get(outputfile)));
         List<XSLFSlide> slides = outputPpt.getSlides();
         Assertions.assertEquals(1, slides.size());
         List<XSLFShape> shapes = slides.get(0).getShapes();
@@ -43,14 +44,14 @@ class IfSlideProcessorTest {
     @Test
     void supports() {
         IfSlideProcessor processor = new IfSlideProcessor();
-        Assertions.assertEquals(true, processor.supports("#if"));
+        Assertions.assertTrue(processor.supports("#if"));
     }
 
     @Test
     void parseDirective() {
         IfSlideProcessor processor = new IfSlideProcessor();
         DataSource dataSource = new DataSource();
-        List users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         users.add(new User("jinceon"));
         dataSource.setVariable("users", users);
         dataSource.setVariable("users1", null);

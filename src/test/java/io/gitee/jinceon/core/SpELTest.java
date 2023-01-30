@@ -2,21 +2,17 @@ package io.gitee.jinceon.core;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SpELTest {
 
     SpelExpressionParser parser = new SpelExpressionParser();
-    private static EvaluationContext context = new StandardEvaluationContext();
-    private TemplateParserContext templateParserContext = new TemplateParserContext();
+    private static final EvaluationContext context = new StandardEvaluationContext();
+    private final TemplateParserContext templateParserContext = new TemplateParserContext();
 
     @BeforeAll
     static void beforeAll(){
@@ -33,7 +29,6 @@ public class SpELTest {
 
     @Test
     void expression2(){
-        templateParserContext = templateParserContext;
         Object name3 = parser.parseExpression("#{#name}", templateParserContext).getValue(context);
         Object name4 = parser.parseExpression(" #{#name} ", templateParserContext).getValue(context);
         // name3 = "jinceon", name4 = " jinceon"
@@ -58,21 +53,12 @@ public class SpELTest {
     
     @Test
     void expression5(){
-        Object value = parser.parseExpression("#hide = #{#name=='jinceon'}", templateParserContext).getValue(context);
-        Assertions.assertEquals("#hide = true", value);
+        Object value = parser.parseExpression("#if = #{#name=='jinceon'}", templateParserContext).getValue(context);
+        Assertions.assertEquals("#if = true", value);
     }
     @Test
     void expression6(){
-        Object value = parser.parseExpression("#hide = #{#name!='jinceon'}", templateParserContext).getValue(context);
-        Assertions.assertEquals("#hide = false", value);
-    }
-
-    @Test
-    void expression7(){
-        Object value = parser.parseExpression("{collection:#name,pageSize:2}").getValue(context);
-        Map expected = new HashMap();
-        expected.put("collection", "jinceon");
-        expected.put("pageSize", 2);
-        Assertions.assertEquals(expected, value);
+        Object value = parser.parseExpression("#if = #{#name!='jinceon'}", templateParserContext).getValue(context);
+        Assertions.assertEquals("#if = false", value);
     }
 }

@@ -1,7 +1,8 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.data;
 
-import io.gitee.jinceon.core.*;
 import io.gitee.jinceon.core.Chart;
+import io.gitee.jinceon.core.DataSource;
+import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -126,9 +127,7 @@ public class ChartDataProcessor implements DataProcessor {
         iChart.plot(chartData);
         try {
             log.debug("after plot range: {}", iChart.getWorkbook().getSheetAt(workSheetIndex).getDimension().formatAsString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidFormatException e) {
+        } catch (IOException | InvalidFormatException e) {
             throw new RuntimeException(e);
         }
     }

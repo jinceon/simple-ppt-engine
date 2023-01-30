@@ -1,21 +1,19 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.template.slide;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.SlideProcessor;
+import io.gitee.jinceon.core.template.shape.ShapeProcessor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.sl.usermodel.SlideShow;
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.apache.poi.xslf.usermodel.XSLFShape;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
  * #if =  expression
- * when expression evaluate result equal false, slide will be removed.
+ * when expression evaluate result equal false, shape will be removed.
  */
 @Order(1000)
 @Slf4j
-public class IfSlideProcessor implements SlideProcessor {
+public class IfShapeProcessor implements ShapeProcessor {
     private static final String DIRECTIVE = "#if";
     @Override
     public boolean supports(String directive) {
@@ -31,16 +29,12 @@ public class IfSlideProcessor implements SlideProcessor {
     }
 
     @Override
-    public void process(XSLFSlide slide, Object context) {
+    public void process(XSLFShape shape, Object context) {
         if(!Boolean.TRUE.equals(context)){
-            log.debug("#if=false remove slide `{}`", slide.getSlideNumber());
-            SlideShow ppt = slide.getSlideShow();
-            if(ppt instanceof XMLSlideShow){
-                XMLSlideShow pptx = (XMLSlideShow) ppt;
-                pptx.removeSlide(slide.getSlideNumber()-1);
-            }else{
-                throw new UnsupportedOperationException("only supports pptx");
-            }
+            // aspose 删除和隐藏 肉眼看起来效果似乎一样
+            // 但poi 没有隐藏。remove后会导致data processor阶段的shape丢失，只能重新一次新的循环
+            log.debug("#if=false set shape `{}` invisible", shape.getShapeName());
+            shape.getParent().removeShape(shape);
         }
     }
 }

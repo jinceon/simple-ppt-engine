@@ -1,11 +1,22 @@
 package io.gitee.jinceon.core;
 
-import io.gitee.jinceon.processor.*;
+import io.gitee.jinceon.core.data.ChartDataProcessor;
+import io.gitee.jinceon.core.data.DataProcessor;
+import io.gitee.jinceon.core.data.TableDataProcessor;
+import io.gitee.jinceon.core.data.TextDataProcessor;
+import io.gitee.jinceon.core.template.shape.ForShapeProcessor;
+import io.gitee.jinceon.core.template.shape.ForSlideProcessor;
+import io.gitee.jinceon.core.template.shape.ShapeProcessor;
+import io.gitee.jinceon.core.template.slide.IfShapeProcessor;
+import io.gitee.jinceon.core.template.slide.IfSlideProcessor;
+import io.gitee.jinceon.core.template.slide.SlideProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xslf.usermodel.*;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,11 +29,11 @@ public class SimpleEngine {
     private final List<SlideProcessor> slideProcessors = new ArrayList<>();
     private final List<ShapeProcessor> shapeProcessors = new ArrayList<>();
     private DataSource dataSource;
-    private XMLSlideShow presentation;
+    private final XMLSlideShow presentation;
 
     public SimpleEngine(String file){
         try {
-            this.presentation = new XMLSlideShow(new FileInputStream(file));
+            this.presentation = new XMLSlideShow(Files.newInputStream(Paths.get(file)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -38,7 +49,7 @@ public class SimpleEngine {
 
     public void save(String outputFile){
         try {
-            this.presentation.write(new FileOutputStream(outputFile));
+            this.presentation.write(Files.newOutputStream(Paths.get(outputFile)));
         } catch (IOException e) {
             log.error("write to file failed", e);
         }

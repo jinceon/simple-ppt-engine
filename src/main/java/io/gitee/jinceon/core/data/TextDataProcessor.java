@@ -1,8 +1,7 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.data;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.DataProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xslf.usermodel.XSLFAutoShape;
 import org.apache.poi.xslf.usermodel.XSLFShape;
@@ -31,11 +30,9 @@ public class TextDataProcessor implements DataProcessor {
     public void process(XSLFShape shape, DataSource dataSource) {
         XSLFAutoShape textFrame = (XSLFAutoShape) shape;
         List<XSLFTextParagraph> paragraphs = textFrame.getTextParagraphs();
-        for (int i = 0; i < paragraphs.size(); i++) {
-            XSLFTextParagraph paragraph = paragraphs.get(i);
+        for (XSLFTextParagraph paragraph : paragraphs) {
             List<XSLFTextRun> portions = paragraph.getTextRuns();
-            for (int j = 0; j < portions.size(); j++) {
-                XSLFTextRun portion = portions.get(j);
+            for (XSLFTextRun portion : portions) {
                 String spel = portion.getRawText();
                 log.debug("spel: {}", spel);
                 SpelExpressionParser parser = new SpelExpressionParser();
