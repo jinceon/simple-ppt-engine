@@ -74,7 +74,7 @@ class ChartDataProcessorTest {
             counts.add(new Sales(i+"月 ", random.nextInt(100), random.nextInt(100), random.nextInt(100)));
         }
 
-        String[] categories = counts.stream().map(Sales::getMonth).collect(Collectors.toList()).toArray(new String[0]);
+        String[] categories = counts.stream().map(Sales::getMonth).toArray(String[]::new);
         Pair[] series = new Pair[]{
                 new Pair("食物", "food"),
                 new Pair("服饰", "cloth"),
