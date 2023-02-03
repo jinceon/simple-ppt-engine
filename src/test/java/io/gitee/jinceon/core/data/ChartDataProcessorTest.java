@@ -1,18 +1,18 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.data;
 
 import io.gitee.jinceon.core.Chart;
 import io.gitee.jinceon.core.Chart.Pair;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
 import io.gitee.jinceon.processor.data.AgeCount;
-import io.gitee.jinceon.processor.data.Sales;
-import io.gitee.jinceon.processor.data.Score;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 class ChartDataProcessorTest {
 
@@ -83,6 +83,28 @@ class ChartDataProcessorTest {
         Chart chart = new Chart(categories, series);
         chart.setData(counts);
         return chart;
+    }
+
+    @Data
+    @Builder
+    public static
+    class Score {
+        private String name;
+        private int math;
+        private int chinese;
+        private int english;
+        private int chemistry;
+        private int physics;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static
+    class Sales {
+        private String month;
+        private long food;
+        private long cloth;
+        private long drink;
     }
 }
 

@@ -1,4 +1,4 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.template.slide;
 
 import io.gitee.jinceon.core.Chart;
 import io.gitee.jinceon.core.DataSource;
@@ -9,7 +9,6 @@ import io.gitee.jinceon.processor.data.Trend;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 class ForSlideProcessorTest {
     @Test

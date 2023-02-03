@@ -1,9 +1,9 @@
-package io.gitee.jinceon.processor;
+package io.gitee.jinceon.core.template.slide;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
-import io.gitee.jinceon.core.template.slide.IfSlideProcessor;
-import io.gitee.jinceon.processor.data.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFAutoShape;
 import org.apache.poi.xslf.usermodel.XSLFShape;
@@ -61,4 +61,9 @@ class IfSlideProcessorTest {
         Assertions.assertEquals(true, processor.parseDirective("#if=( #users != null and #users.size() > 0)", dataSource));
     }
 
+    @Data
+    @AllArgsConstructor
+    public static class User {
+        private String name;
+    }
 }
