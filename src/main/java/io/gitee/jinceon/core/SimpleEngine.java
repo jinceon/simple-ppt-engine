@@ -1,9 +1,6 @@
 package io.gitee.jinceon.core;
 
-import io.gitee.jinceon.core.data.ChartDataProcessor;
-import io.gitee.jinceon.core.data.DataProcessor;
-import io.gitee.jinceon.core.data.TableDataProcessor;
-import io.gitee.jinceon.core.data.TextDataProcessor;
+import io.gitee.jinceon.core.data.*;
 import io.gitee.jinceon.core.template.shape.ForShapeProcessor;
 import io.gitee.jinceon.core.template.shape.ForSlideProcessor;
 import io.gitee.jinceon.core.template.shape.ShapeProcessor;
@@ -72,6 +69,7 @@ public class SimpleEngine {
             this.dataProcessors.add(new ChartDataProcessor());
             this.dataProcessors.add(new TableDataProcessor());
             this.dataProcessors.add(new TextDataProcessor());
+            this.dataProcessors.add(new ImageDataProcessor());
 
             this.slideProcessors.add(new IfSlideProcessor());
             this.slideProcessors.add(new ForSlideProcessor());
