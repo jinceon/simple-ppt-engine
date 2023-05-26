@@ -110,6 +110,13 @@ we just manipulate the data table nested in the shape.
 
 [Chart Documentation](docs/processor/Chart.md)
 
+### Image 图片
+在模板PPT里插入一个图片占位符，渲染时替换成自己所需的图片。  
+图片渲染的大小以占位符图片为准。
+
+[Table Documentation](docs/processor/Image.md)
+
+
 ### If 指令
 [if指令](docs/directive/if.md)
 
