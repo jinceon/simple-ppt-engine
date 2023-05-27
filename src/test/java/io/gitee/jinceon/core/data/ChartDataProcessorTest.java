@@ -47,27 +47,20 @@ class ChartDataProcessorTest {
     }
 
     Chart barChart() {
-        List<Score> scores = new ArrayList<>();
+        List<Sales> counts = new ArrayList<>();
         Random random = new Random();
-        for(int i=0;i<10;i++){
-            scores.add(Score.builder().name("Student " + i)
-                    .math(random.nextInt(100))
-                    .english(random.nextInt(100))
-                    .chinese(random.nextInt(100))
-                    .physics(random.nextInt(100))
-                    .chemistry(random.nextInt(100))
-                    .build());
+        for(int i=1;i<13;i++){
+            counts.add(new Sales(i+"月 ", random.nextInt(100), random.nextInt(100), random.nextInt(100)));
         }
 
+        String[] categories = counts.stream().map(Sales::getMonth).toArray(String[]::new);
         Pair[] series = new Pair[]{
-                new Pair("数学", "math"),
-                new Pair("语文", "chinese"),
-                new Pair("英语", "english"),
-                new Pair("物理", "physics"),
-                new Pair("化学", "chemistry"),
+                new Pair("食物", "food"),
+                new Pair("服饰", "cloth"),
+                new Pair("饮料", "drink")
         };
-        Chart chart = new Chart(series);
-        chart.setDataWithCategories(scores, "name");
+        Chart chart = new Chart(categories, series);
+        chart.setData(counts);
         return chart;
     }
 

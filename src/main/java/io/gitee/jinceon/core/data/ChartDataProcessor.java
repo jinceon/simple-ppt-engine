@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xddf.usermodel.chart.XDDFChartData;
-import org.apache.poi.xddf.usermodel.chart.XDDFDataSource;
-import org.apache.poi.xddf.usermodel.chart.XDDFDataSourcesFactory;
-import org.apache.poi.xddf.usermodel.chart.XDDFNumericalDataSource;
+import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xslf.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -50,11 +47,6 @@ public class ChartDataProcessor implements DataProcessor {
         Chart chart = (Chart) parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
         log.debug("spel: {}, chart: {}", spel, chart);
         if(chart == null){
-            return;
-        }
-        List<XDDFChartData> chartSeries = iChart.getChartSeries();
-        if(chartSeries.size() > 1){
-            log.warn("暂不支持组合图表");
             return;
         }
         XSSFWorkbook chartDataWorkbook = null;
@@ -104,27 +96,21 @@ public class ChartDataProcessor implements DataProcessor {
         if(debug) {
             log.debug(MatrixUtil.visual(matrix));
         }
+        // 自动缩容。组合图表缩且只缩最后一个
+        autoScale(chart, iChart);
+
         for(XDDFChartData chartData: iChart.getChartSeries()) {
-            int seriesCountOfUI =  chartData.getSeriesCount();
-            int seriesCountOfData = chart.getSeries().length;
-            for(int i=0;i<seriesCountOfUI-seriesCountOfData;i++){
-                chartData.removeSeries(--seriesCountOfUI);
-            }
             XDDFDataSource<String> cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
                     new CellRangeAddress(1, categories.length, 0, 0));
             log.debug("category range: {}", cat2.getDataRangeReference());
-            for(int i=0;i<seriesCountOfUI;i++){
+            int minSeries = Math.min(chartData.getSeriesCount(), series.length);
+            for(int i=0;i<minSeries;i++){
                 XDDFChartData.Series iSeries = chartData.getSeries(i);
                 XDDFNumericalDataSource<Double> val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
                         new CellRangeAddress(1, categories.length, i + 1, i + 1));
                 log.debug("series {} range: {}", series[i].getLabel(), val2.getDataRangeReference());
                 iSeries.setTitle(series[i].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(i + 1)));
                 iSeries.replaceData(cat2, val2);
-            }
-            for(int i=0;i<seriesCountOfData-seriesCountOfUI;i++){
-                XDDFNumericalDataSource<? extends Number> values = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                        new CellRangeAddress(1, categories.length, seriesCountOfUI+i + 1, seriesCountOfUI+i + 1));
-                chartData.addSeries(cat2, values);
             }
             iChart.plot(chartData);
             try {
@@ -134,6 +120,29 @@ public class ChartDataProcessor implements DataProcessor {
             }
             if (chart.getCustomizeFunction() != null) {
                 chart.getCustomizeFunction().accept(iChart);
+            }
+        }
+    }
+
+    /**
+     * 自动缩容
+     * @param chart
+     * @param iChart
+     */
+    private static void autoScale(Chart chart, XSLFChart iChart) {
+        int seriesCountOfData = chart.getSeries().length;
+        int seriesCountOfUI = 0;
+        List<XDDFChartData> chartDatas = iChart.getChartSeries();
+        for(XDDFChartData chartData: chartDatas) {
+            seriesCountOfUI += chartData.getSeriesCount();
+        }
+        for (int i = 0; i < seriesCountOfUI - seriesCountOfData; i++) {
+            for(int j=chartDatas.size();j>0;j--) {
+                int count = chartDatas.get(j-1).getSeriesCount();
+                if(count > 0){
+                    chartDatas.get(j-1).removeSeries(count-1);
+                    break;//跳出内，继续外
+                }
             }
         }
     }
