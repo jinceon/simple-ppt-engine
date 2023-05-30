@@ -113,8 +113,8 @@ public class Table {
 
     /**
      * merge another table into current table
-     * @param position
-     * @param table
+     * @param position 加在当前表格的哪个方向，上下左右
+     * @param table 被合并的表格
      */
     public void merge(Position position, Table table){
         int row = 0, col = 0;
@@ -177,8 +177,8 @@ public class Table {
 
     /**
      * merge another Object[][] into current table
-     * @param position
-     * @param data
+     * @param position 加在当前表格的哪个方向，上下左右
+     * @param data 被合并的二维数据
      */
     public void merge(Position position, Object[][] data){
         merge(position, new Table(data));

@@ -8,11 +8,15 @@ import java.io.StringWriter;
 public class MatrixUtil {
 
     /**
+     * <pre>
      *    a b c d                   a e i
-     *    e f g h      ----->       b f j
+     *    e f g h      -----&gt;       b f j
      *    i j k l                   c g k
      *                              d h l
-     *
+     *  </pre>
+     *  将二维矩阵 行列互换，行转列，列转行
+     * @param matrix 要转置的二维矩阵
+     * @return Object[][] 转置后的二维矩阵
      */
     public static Object[][] rowColumnTransform(Object[][] matrix){
         log.debug("before rowColumnTransform: {}", visual(matrix));
@@ -29,8 +33,10 @@ public class MatrixUtil {
     }
 
     /**
-     * print matrix in the console
-     * @param matrix
+     * visualize matrix using a table style in the console
+     * 将二维矩阵转成带\n \t的字符串以便在控制台打印出来更直观
+     * @param matrix 要打印的二维矩阵
+     * @return String 带样式（\n \t）的字符串
      */
     public static String visual(Object[][] matrix){
         int rows = matrix.length;
