@@ -108,8 +108,8 @@ PPT 自己的逻辑是：
 
 但如果你不是给表格设置，而是给单元格设置样式，那么新增的行里不会复制样式。
 
-[for-table-template](../images/for-table-template.png)
-[for-table-rendered](../images/for-table-rendered.png)
+![for-table-template](../images/for-table-template.png)
+![for-table-rendered](../images/for-table-rendered.png)
 
 这种情况下，如果你的PPT页最多放一个5行的表格，建议设置模板的时候就插入5行，然后预先设置好样式。  
 这样当实际传入少于5行时，也会自动清除多余的行。
