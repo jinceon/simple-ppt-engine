@@ -54,13 +54,17 @@ class ChartDataProcessorTest {
                     .math(random.nextInt(100))
                     .english(random.nextInt(100))
                     .chinese(random.nextInt(100))
+                    .physics(random.nextInt(100))
+                    .chemistry(random.nextInt(100))
                     .build());
         }
 
         Pair[] series = new Pair[]{
                 new Pair("数学", "math"),
                 new Pair("语文", "chinese"),
-                new Pair("英语", "english")
+                new Pair("英语", "english"),
+                new Pair("物理", "physics"),
+                new Pair("化学", "chemistry"),
         };
         Chart chart = new Chart(series);
         chart.setDataWithCategories(scores, "name");

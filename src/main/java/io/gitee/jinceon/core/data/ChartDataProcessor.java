@@ -105,24 +105,18 @@ public class ChartDataProcessor implements DataProcessor {
         }
         XDDFChartData chartData = iChart.getChartSeries().get(0);//暂不支持复合图表
         int seriesCount = chartData.getSeriesCount();
-        for(int i=0;i<seriesCount-series.length;i++){
-            chartData.removeSeries(0);//清空模板里多余的旧数据。for循环在list
+        for(int i=0;i<seriesCount;i++){
+            chartData.removeSeries(0);//清空模板里原有的旧数据
         }
-        XDDFDataSource cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
+        XDDFDataSource<String> cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
                 new CellRangeAddress(1, categories.length, 0, 0));
         log.debug("category range: {}", cat2.getDataRangeReference());
         for(int s=0; s< series.length; s++) {
-            XDDFNumericalDataSource val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
+            XDDFNumericalDataSource<Double> val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
                     new CellRangeAddress(1, categories.length, s+1, s+1));
             log.debug("series {} range: {}", s, val2.getDataRangeReference());
-            if(s>=seriesCount){
-                XDDFChartData.Series series1 = chartData.addSeries(cat2, val2);
-                series1.setTitle(series[s].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(s+1)));
-            }else {
-                XDDFChartData.Series series1 = chartData.getSeries(s);
-                series1.setTitle(series[s].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(s+1)));
-                series1.replaceData(cat2, val2);
-            }
+            XDDFChartData.Series series1 = chartData.addSeries(cat2, val2);
+            series1.setTitle(series[s].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(s+1)));
         }
         iChart.plot(chartData);
         try {
