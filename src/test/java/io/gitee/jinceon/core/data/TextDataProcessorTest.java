@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 class TextDataProcessorTest {
@@ -19,6 +20,17 @@ class TextDataProcessorTest {
         SimpleEngine engine = new SimpleEngine("src/test/resources/text.pptx");
         DataSource dataSource = new DataSource();
         dataSource.setVariable("name", "jinceon");
+
+        List<String> categories = new ArrayList<>();
+        for(int i=0;i<10;i++){
+            if(i<6) {
+                categories.add("栏目" + (i + 1));
+            }else{
+                categories.add("");
+            }
+        }
+        dataSource.setVariable("category", categories);
+
         engine.setDataSource(dataSource);
         engine.process();
         String outputFile = "src/test/resources/test-text.pptx";
