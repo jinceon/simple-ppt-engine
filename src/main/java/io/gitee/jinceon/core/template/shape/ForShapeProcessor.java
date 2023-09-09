@@ -63,8 +63,7 @@ public class ForShapeProcessor implements ShapeProcessor {
         }
         while(colDifference < 0){
             // ui + col
-            // iTable.addColumn(); // 加的是一个空列
-            iTable.insertColumn(iTable.getNumberOfColumns());
+            iTable.addColumn(); // 加的是一个空列
             colDifference++;
             log.debug("ui列不够，加一列");
         }
