@@ -2,9 +2,9 @@ package io.gitee.jinceon.core;
 
 import io.gitee.jinceon.core.data.*;
 import io.gitee.jinceon.core.template.shape.ForShapeProcessor;
-import io.gitee.jinceon.core.template.shape.ForSlideProcessor;
+import io.gitee.jinceon.core.template.slide.ForSlideProcessor;
 import io.gitee.jinceon.core.template.shape.ShapeProcessor;
-import io.gitee.jinceon.core.template.slide.IfShapeProcessor;
+import io.gitee.jinceon.core.template.shape.IfShapeProcessor;
 import io.gitee.jinceon.core.template.slide.IfSlideProcessor;
 import io.gitee.jinceon.core.template.slide.SlideProcessor;
 import lombok.extern.slf4j.Slf4j;

@@ -2,7 +2,6 @@ package io.gitee.jinceon.core.template.shape;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
-import io.gitee.jinceon.core.template.slide.IfShapeProcessor;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFAutoShape;
 import org.apache.poi.xslf.usermodel.XSLFShape;

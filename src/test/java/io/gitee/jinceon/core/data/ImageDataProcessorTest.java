@@ -20,7 +20,7 @@ class ImageDataProcessorTest {
         DataSource dataSource = new DataSource();
         byte[] png = Files.readAllBytes(Paths.get("src/test/resources/image.png"));
         byte[] jpg = Files.readAllBytes(Paths.get("src/test/resources/image.jpg"));
-        dataSource.setVariable("img1", png);
+        dataSource.setVariable("img11", png);
         dataSource.setVariable("img2", jpg);
         engine.setDataSource(dataSource);
         engine.process();
