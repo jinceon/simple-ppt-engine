@@ -9,7 +9,7 @@
 ```
 ## Slide 幻灯片
 针对幻灯片，可以在`备注`里添加for指令。  
-当`expression`执行为`true`时，幻灯片保留；为`false`时幻灯片删除。  
+当`variable`值为`List`或`Object[]`时，幻灯片会按`List`或`Object[]`的长度复制出对应数量的slide；为`null`或集合为空时幻灯片删除。  
 ![for指令-幻灯片](../images/for-slide.png)
 ## Shape 形状(目前只支持Table 表格)
 可以在`可选文本`里添加for指令，让表格实现自动伸缩。    
