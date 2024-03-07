@@ -117,3 +117,43 @@ PPT 自己的逻辑是：
 但如果模板只放一行，原本是期望复制上一行的样式做为新增行样式的。
 但实际未实现（aspose倒是支持，poi还是相对简陋）。  
 考虑到实现成本，目前暂不考虑实现。
+
+## 定制化函数钩子
+表格是个非常常用的组件。  
+同时也会有非常多的定制化需求，最常见的莫过于`合并单元格`。  
+每次做一点小小的改动，都要去自定义processor，感觉确实太繁琐。
+但是在engine内实现太具体的细节，又感觉不合适。  
+因此增加了一个定制化函数钩子，可以在里面实现一些风格的定制化。  
+
+```java
+SimpleEngine engine = new SimpleEngine("src/test/resources/table-hook.pptx");
+DataSource dataSource = new DataSource();
+String[] headers = new String[]{
+        "goods",
+        "year",
+        "price"
+};
+List<Trend> trends = new ArrayList<>();
+trends.add(new Trend("cloth", 2021, 300));
+trends.add(new Trend("cloth", 2022, 600));
+trends.add(new Trend("cloth", 2023, 900));
+trends.add(new Trend("drink", 2021, 400));
+trends.add(new Trend("drink", 2022, 600));
+trends.add(new Trend("drink", 2023, 800));
+
+Table tableA = new Table();
+tableA.setCustomizeFunction(table -> {
+    table.mergeCells(1,3,0,0); // 合并第1列的2-4行单元格
+    table.mergeCells(4,6,0,0); // 合并第1列的5-7行单元格
+    return null;
+});
+tableA.setData(headers, trends, Table.Direction.HORIZONTAL);
+tableA.merge(Table.Position.TOP, new Object[1][1]);
+dataSource.setVariable("tableA", tableA);
+
+engine.setDataSource(dataSource);
+engine.process();
+String outputfile = "src/test/resources/test-table-hook.pptx";
+engine.save(outputfile);
+```
+![自定义函数钩子实现合并单元格](../images/table-hook.png)

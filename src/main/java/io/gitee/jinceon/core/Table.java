@@ -1,11 +1,14 @@
 package io.gitee.jinceon.core;
 
 import io.gitee.jinceon.utils.MatrixUtil;
+import lombok.Setter;
+import org.apache.poi.xslf.usermodel.XSLFTable;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  <pre>
@@ -57,9 +60,15 @@ public class Table {
 
     private Object[][] data;
 
+    @Setter
+    private Function<XSLFTable, Void> customizeFunction;
     public Table(){}
     public Table(Object[][] data){
         this.data = data;
+    }
+
+    public Function<XSLFTable, Void> getCustomizeFunction() {
+        return customizeFunction;
     }
 
     /**
