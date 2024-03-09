@@ -80,7 +80,7 @@ public class TableDataProcessor implements DataProcessor {
         }
         log.debug(sw.toString());
         if(table.getCustomizeFunction() != null){
-            table.getCustomizeFunction().apply(iTable);
+            table.getCustomizeFunction().accept(iTable);
         }
     }
 }

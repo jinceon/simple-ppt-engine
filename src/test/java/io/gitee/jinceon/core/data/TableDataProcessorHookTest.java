@@ -45,7 +45,6 @@ class TableDataProcessorHookTest {
         tableA.setCustomizeFunction(table -> {
             table.mergeCells(1,3,0,0);
             table.mergeCells(4,6,0,0);
-            return null;
         });
         tableA.setData(headers, trends, Table.Direction.HORIZONTAL);
         tableA.merge(Table.Position.TOP, new Object[1][1]);
