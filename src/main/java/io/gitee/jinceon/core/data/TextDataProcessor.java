@@ -2,6 +2,7 @@ package io.gitee.jinceon.core.data;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
+import io.gitee.jinceon.core.Text;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xslf.usermodel.XSLFAutoShape;
 import org.apache.poi.xslf.usermodel.XSLFShape;
@@ -36,9 +37,17 @@ public class TextDataProcessor implements DataProcessor {
                 String spel = portion.getRawText();
                 log.debug("spel: {}", spel);
                 SpelExpressionParser parser = new SpelExpressionParser();
-                String text = String.valueOf(parser.parseExpression(spel, new TemplateParserContext()).getValue(dataSource.getEvaluationContext()));
+                Object text = parser.parseExpression(spel, new TemplateParserContext()).getValue(dataSource.getEvaluationContext());
                 log.debug("spel: {}, text: {}", spel, text);
-                portion.setText(text);
+                if(text instanceof String){
+                    portion.setText((String) text);
+                }else if(text instanceof Text){
+                    Text txt = (Text)text;
+                    portion.setText(txt.getText());
+                    if(txt.getCustomizeFunction() != null){
+                        txt.getCustomizeFunction().accept(portion);
+                    }
+                }
             }
         }
     }
