@@ -2,15 +2,17 @@ package io.gitee.jinceon.core;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.poi.xslf.usermodel.XSLFChart;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
-@ToString
 public class Chart {
 
     /*
@@ -28,6 +30,10 @@ public class Chart {
      * Object[categories][series]
      */
     private Double[][] data;
+
+    @Setter
+    @Getter
+    private Consumer<XSLFChart> customizeFunction;
 
     public Chart() {
 

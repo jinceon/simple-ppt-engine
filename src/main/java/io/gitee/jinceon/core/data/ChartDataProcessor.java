@@ -124,6 +124,9 @@ public class ChartDataProcessor implements DataProcessor {
         } catch (IOException | InvalidFormatException e) {
             throw new RuntimeException(e);
         }
+        if(chart.getCustomizeFunction() != null){
+            chart.getCustomizeFunction().accept(iChart);
+        }
     }
 
     private void makesureRange(XSSFSheet sheet, CellRangeAddress range) {
