@@ -26,10 +26,12 @@ Chart chartA = ....();
 chartA.setCustomizeFunction(xslfChart -> {
     xslfChart.getChartSeries().get(0).getSeries(0)
         .getDataPoint(8) // 因此示例里是9个月的数据，所有最后一个月下标是8
-        .setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(0, 0,255)));
+        .setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(100_000, 0, 0)));
     });
 dataSource.setVariable("chartA", chartA);
 engine.setDataSource(dataSource);
 engine.process();
 engine.save("src/test/resources/test-chart-hook.pptx");
 ```
+
+![自定义函数钩子](../images/chart-hook.png)
