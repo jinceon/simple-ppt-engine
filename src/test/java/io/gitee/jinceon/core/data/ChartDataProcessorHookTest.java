@@ -45,7 +45,8 @@ class ChartDataProcessorHookTest {
 
         chart.setCustomizeFunction(xslfChart -> {
             xslfChart.getChartSeries().get(0).getSeries(0).getDataPoint(2)
-                    .setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(0, 255,0)));
+                    .setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(0, 0,100_000)));
+            // XDDFColor.from 颜色是百分比，从0到100_000的数字
         });
         return chart;
     }
@@ -63,7 +64,7 @@ class ChartDataProcessorHookTest {
         chart.setDataWithCategories(months, "month");
         chart.setCustomizeFunction(xslfChart -> {
             xslfChart.getChartSeries().get(0).getSeries(0).getDataPoint(8)
-                    .setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(0, 0,255)));
+                    .setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(100_000, 0,0)));
         });
         return chart;
     }
