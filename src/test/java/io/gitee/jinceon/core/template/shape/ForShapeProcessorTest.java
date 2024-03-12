@@ -2,7 +2,7 @@ package io.gitee.jinceon.core.template.shape;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
-import io.gitee.jinceon.core.Table;
+import io.gitee.jinceon.core.model.Table;
 import io.gitee.jinceon.processor.data.Trend;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFShape;

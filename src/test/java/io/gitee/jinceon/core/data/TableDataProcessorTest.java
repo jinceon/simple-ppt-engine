@@ -2,7 +2,7 @@ package io.gitee.jinceon.core.data;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
-import io.gitee.jinceon.core.Table;
+import io.gitee.jinceon.core.model.Table;
 import io.gitee.jinceon.processor.data.Trend;
 import org.apache.poi.xslf.usermodel.*;
 import org.junit.jupiter.api.Assertions;

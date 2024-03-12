@@ -1,4 +1,4 @@
-package io.gitee.jinceon.core;
+package io.gitee.jinceon.core.model;
 
 import io.gitee.jinceon.utils.MatrixUtil;
 import lombok.Getter;

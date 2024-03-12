@@ -1,11 +1,10 @@
 package io.gitee.jinceon.core.data;
 
-import io.gitee.jinceon.core.Chart;
-import io.gitee.jinceon.core.Chart.Pair;
+import io.gitee.jinceon.core.model.Chart;
+import io.gitee.jinceon.core.model.Chart.Pair;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import org.apache.poi.xddf.usermodel.XDDFColor;
 import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;

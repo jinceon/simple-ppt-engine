@@ -19,7 +19,41 @@
     engine.save(outputFile);
 ```
 ## Tips 提示
-对图片的大小未做特殊处理，所以不管你的图片尺寸是怎样的，最终都会被渲染成`展位图`图片的大小。
+对图片的大小未做特殊处理，所以不管你的图片尺寸是怎样的，默认都会被渲染成`展位图`图片的大小。  
+如果希望按图片原始尺寸渲染，请参考`定制化函数钩子`。
+
+## 定制化函数钩子
+图片是个非常常用的组件。  
+如果需要对图片的展示做一些定制化处理，如根据图片的原始尺寸渲染，那么就可以使用定制化函数钩子了。  
+具体代码可以参见`src/test/java/io/gitee/jinceon/core/data/ImageDataProcessorHookTest.java`
+
+```java
+SimpleEngine engine = new SimpleEngine("src/test/resources/image-hook.pptx");
+DataSource dataSource = new DataSource();
+byte[] png = Files.readAllBytes(Paths.get("src/test/resources/image.png"));
+dataSource.setVariable("img1", new Image(png, xslfPictureShape -> {
+    // 图片旋转90°
+    xslfPictureShape.setRotation(90.0);
+}));
+
+
+byte[] jpg = Files.readAllBytes(Paths.get("src/test/resources/image.jpg"));
+BufferedImage jpg1 = ImageIO.read(new ByteArrayInputStream(png));
+int actualWidth = jpg1.getWidth();
+int actualHeight = jpg1.getHeight();
+dataSource.setVariable("img2", new Image(jpg, xslfPictureShape -> {
+    // 忽略占位符尺寸，按图片原始尺寸渲染
+    Rectangle2D rectangle2D = xslfPictureShape.getAnchor();
+    rectangle2D.setRect(rectangle2D.getX(), rectangle2D.getY(), actualWidth, actualHeight);
+    xslfPictureShape.setAnchor(rectangle2D);
+}));
+engine.setDataSource(dataSource);
+engine.process();
+String outputFile = "src/test/resources/test-image-hook.pptx";
+engine.save(outputFile);
+```
+
+![图片定制化函数钩子](../images/image-hook.png)
 
 ## Warning 特别提醒
 [请参考Image替换bug](https://gitee.com/jinceon/simple-ppt-engine/issues/I8C7K6)

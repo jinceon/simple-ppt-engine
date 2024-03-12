@@ -2,7 +2,7 @@ package io.gitee.jinceon.core.data;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.Text;
+import io.gitee.jinceon.core.model.Text;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xslf.usermodel.XSLFAutoShape;
 import org.apache.poi.xslf.usermodel.XSLFShape;

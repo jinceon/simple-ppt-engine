@@ -1,12 +1,10 @@
 package io.gitee.jinceon.core.data;
 
-import io.gitee.jinceon.core.Chart;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
+import io.gitee.jinceon.core.model.Image;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.sl.usermodel.PictureData;
 import org.apache.poi.xslf.usermodel.ShapeHelper;
-import org.apache.poi.xslf.usermodel.XSLFPictureData;
 import org.apache.poi.xslf.usermodel.XSLFPictureShape;
 import org.apache.poi.xslf.usermodel.XSLFShape;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -31,15 +29,28 @@ public class ImageDataProcessor implements DataProcessor {
         XSLFPictureShape iPicture = (XSLFPictureShape) shape;
         String spel = ShapeHelper.getAlternativeText(shape);
         SpelExpressionParser parser = new SpelExpressionParser();
-        byte[] picture = (byte[]) parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
+        Object picture = parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
         if(picture == null){
             return;
         }
-        log.debug("spel: {}, picture: {}", spel, picture.length);
-        try {
-            iPicture.getPictureData().setData(picture);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(picture instanceof byte[]){
+            byte[] pic = (byte[])picture;
+            log.debug("spel: {}, picture: {}", spel, pic.length);
+            try {
+                iPicture.getPictureData().setData(pic);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else if(picture instanceof Image){
+            Image pic = (Image) picture;
+            try {
+                iPicture.getPictureData().setData(pic.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if(pic.getCustomizeFunction() != null){
+                pic.getCustomizeFunction().accept(iPicture);
+            }
         }
     }
 }

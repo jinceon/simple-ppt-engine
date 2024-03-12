@@ -2,7 +2,7 @@ package io.gitee.jinceon.core.data;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.SimpleEngine;
-import io.gitee.jinceon.core.Text;
+import io.gitee.jinceon.core.model.Text;
 import org.apache.poi.sl.usermodel.PaintStyle;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFAutoShape;

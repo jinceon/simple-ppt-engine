@@ -1,6 +1,6 @@
 package io.gitee.jinceon.core.data;
 
-import io.gitee.jinceon.core.Chart;
+import io.gitee.jinceon.core.model.Chart;
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.utils.MatrixUtil;

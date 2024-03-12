@@ -1,4 +1,4 @@
-package io.gitee.jinceon.core;
+package io.gitee.jinceon.core.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
