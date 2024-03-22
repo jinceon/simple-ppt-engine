@@ -109,7 +109,14 @@ PPT 自己的逻辑是：
 但如果你不是给表格设置，而是给单元格设置样式，那么新增的行里不会复制样式。
 
 ![for-table-template](../images/for-table-template.png)
+另外，如果模板设置了字体，
 ![for-table-rendered](../images/for-table-rendered.png)
+poi渲染的结果是丢失了字体，
+![for-table-aspose-rendered](../images/for-table-aspose-rendered.png)
+aspose渲染的结果会保留字体。  
+如果要保留字体，商业用途的话，建议用aspose。  
+如果用poi，就用`定制化函数钩子`重新设置字体。  
+参见[表格导出，里面设置的字体大小样式，导出字体大小很大，这个怎么处理？](https://gitee.com/jinceon/simple-ppt-engine/issues/I9AQ4Q)
 
 这种情况下，如果你的PPT页最多放一个5行的表格，建议设置模板的时候就插入5行，然后预先设置好样式。  
 这样当实际传入少于5行时，也会自动清除多余的行。

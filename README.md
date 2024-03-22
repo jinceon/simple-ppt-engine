@@ -138,3 +138,7 @@ we just manipulate the data table nested in the shape.
 
 ## FAQ 常见问题
 [常见问题](docs/faq.md)
+
+## 打赏
+如果你觉得我项目对你有帮助，可以请我喝杯冰可乐哟  
+![打赏](donate.jpg)
