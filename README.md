@@ -116,6 +116,9 @@ we just manipulate the data table nested in the shape.
 
 [Image Documentation](docs/processor/Image.md)
 
+### Form 指令
+以表单的方式来使用表格  
+[form指令](docs/directive/form.md)
 
 ### If 指令
 [if指令](docs/directive/if.md)
