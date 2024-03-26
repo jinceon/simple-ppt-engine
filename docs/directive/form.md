@@ -73,4 +73,3 @@ String outputfile = "src/test/resources/test-form-hook.pptx";
 engine.save(outputfile);
 ```
 
-![自定义函数钩子](../images/form-hook.png)
