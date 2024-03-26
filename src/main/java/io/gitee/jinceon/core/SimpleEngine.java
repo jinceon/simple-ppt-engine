@@ -67,6 +67,7 @@ public class SimpleEngine {
     private void loadProcessors(){
         if(!this.defaultProcessorsLoaded) {
             this.dataProcessors.add(new ChartDataProcessor());
+            this.dataProcessors.add(new FormDataProcessor());
             this.dataProcessors.add(new TableDataProcessor());
             this.dataProcessors.add(new TextDataProcessor());
             this.dataProcessors.add(new ImageDataProcessor());

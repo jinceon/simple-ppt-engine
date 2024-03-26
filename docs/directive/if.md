@@ -5,7 +5,7 @@
 ```
 例如
 ```text
-#if = (user != null && user.size > 0)
+#if = (#user != null && #user.size > 0)
 ```
 ## Slide 幻灯片
 针对幻灯片，可以在`备注`里添加if指令。  
