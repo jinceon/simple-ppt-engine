@@ -22,6 +22,7 @@ class ForSlideProcessorTest {
             Chart chart = createChart();
             Table table = createTable();
             Map page = new HashMap<>();
+            page.put("page", i+1);
             page.put("chart", chart);
             page.put("table", table);
             pages.add(page);
