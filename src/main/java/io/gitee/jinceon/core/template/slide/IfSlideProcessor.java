@@ -31,7 +31,7 @@ public class IfSlideProcessor implements SlideProcessor {
 
     @Override
     public void process(XSLFSlide slide, Object context) {
-        if(!Boolean.TRUE.equals(context)){
+        if(context == null || Boolean.FALSE.equals(context)){
             log.debug("#if=false remove slide `{}`", slide.getSlideNumber());
             SlideShow ppt = slide.getSlideShow();
             if(ppt instanceof XMLSlideShow){
