@@ -40,11 +40,16 @@ public class ForShapeProcessor implements ShapeProcessor {
         if(!(shape instanceof XSLFTable)){
             throw new UnsupportedOperationException("only supports `pptx Table` currently, `ppt Table` is under construction");
         }
+        if(context == null){
+            log.debug("Table is null, ignored");
+            return;
+        }
         if(!(context instanceof Table)){
             throw new IllegalArgumentException("please use `Table.class`");
         }
         XSLFTable iTable = (XSLFTable) shape;
         Table table = (Table) context;
+
         List<XSLFTableRow> uiRows = iTable.getRows();
         int cols = iTable.getNumberOfColumns();
         int rowDifference = uiRows.size() - table.getRowCount();
