@@ -27,10 +27,14 @@ public class TextHelper {
             XSLFTextParagraph paragraph = paragraphs.get(0);
             List<XSLFTextRun> textRuns = paragraph.getTextRuns();
             int textRunSize = textRuns.size();
-            for(int i=textRunSize;i>1;i--){
-                paragraph.removeTextRun(textRuns.get(i-1));
+            if(textRunSize > 1) {
+                for (int i = textRunSize; i > 1; i--) {
+                    paragraph.removeTextRun(textRuns.get(i - 1));
+                }
+                textRuns.get(0).setText(text);
+            }else {
+                textShape.setText(text);
             }
-            textRuns.get(0).setText(text);
         }
     }
 
