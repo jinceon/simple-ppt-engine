@@ -73,7 +73,8 @@ public class TableDataProcessor implements DataProcessor {
                 XSLFTableCell cell = cells.get(col);
                 sw.append(String.valueOf(tableData[row][col])).append("\t");
                 if(tableData[row][col]!=null) {
-                    cell.setText(String.valueOf(tableData[row][col]));
+//                    cell.setText(String.valueOf(tableData[row][col]));
+                    TextHelper.setText(cell, String.valueOf(tableData[row][col]));
                 }
             }
             sw.append("\n");

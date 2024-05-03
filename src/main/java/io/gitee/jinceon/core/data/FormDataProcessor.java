@@ -44,11 +44,14 @@ public class FormDataProcessor implements DataProcessor {
                     Object text = parser.parseExpression(spel, new TemplateParserContext())
                             .getValue(dataSource.getEvaluationContext(), rootObject);
                     log.debug("spel: {}, text: {}", spel, text);
+                    // todo 更合适的做法是用renderText，考虑到普适性的同时为降低复杂度，先这样
                     if(text instanceof String){
-                        cell.setText((String) text);
+//                        cell.setText((String) text);
+                        TextHelper.setText(cell, (String) text);
                     }else if(text instanceof FormItem){
                         FormItem txt = (FormItem)text;
-                        cell.setText(txt.getText());
+//                        cell.setText(txt.getText());
+                        TextHelper.setText(cell, txt.getText());
                         if(txt.getCustomizeFunction() != null){
                             txt.getCustomizeFunction().accept(cell);
                         }
