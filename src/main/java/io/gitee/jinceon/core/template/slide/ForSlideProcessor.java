@@ -2,16 +2,11 @@ package io.gitee.jinceon.core.template.slide;
 
 import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
-import io.gitee.jinceon.core.template.slide.SlideProcessor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.sl.usermodel.AutoShape;
 import org.apache.poi.sl.usermodel.Shape;
 import org.apache.poi.sl.usermodel.Slide;
 import org.apache.poi.sl.usermodel.SlideShow;
-import org.apache.poi.xslf.usermodel.ShapeHelper;
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFShape;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.apache.poi.xslf.usermodel.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
@@ -88,9 +83,21 @@ public class ForSlideProcessor implements SlideProcessor {
     private static void replaceIndex(Slide slide, String pageIndex){
         List<Shape> shapes = slide.getShapes();
         for (Shape shape : shapes) {
-            if (shape instanceof AutoShape) {
-                AutoShape text = (AutoShape) shape;
-                text.setText(StringUtils.replace(text.getText(), INDEX_PLACEHOLDER, pageIndex));
+            if (shape instanceof XSLFAutoShape) {
+                XSLFAutoShape xslfAutoShape = (XSLFAutoShape) shape;
+                String text = xslfAutoShape.getText();
+                if (StringUtils.hasText(text) && text.contains(INDEX_PLACEHOLDER)) {
+                    List<XSLFTextParagraph> textParagraphs = xslfAutoShape.getTextParagraphs();
+                    for (XSLFTextParagraph textParagraph : textParagraphs) {
+                        List<XSLFTextRun> textRuns = textParagraph.getTextRuns();
+                        for (XSLFTextRun textRun : textRuns) {
+                            String rawText = textRun.getRawText();
+                            if (StringUtils.hasText(rawText) && rawText.contains(INDEX_PLACEHOLDER)) {
+                                textRun.setText(StringUtils.replace(rawText, INDEX_PLACEHOLDER, pageIndex));
+                            }
+                        }
+                    }
+                }
             } else if (shape instanceof XSLFShape){
                 XSLFShape shape1 = (XSLFShape) shape;
                 ShapeHelper.setAlternativeText(shape1,
