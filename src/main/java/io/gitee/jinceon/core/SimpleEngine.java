@@ -14,10 +14,7 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class SimpleEngine {
@@ -153,13 +150,41 @@ public class SimpleEngine {
             List<XSLFShape> shapesAfterShapeProcess = slide.getShapes();
             for(XSLFShape shape: shapesAfterShapeProcess) {
                 for (DataProcessor dataProcessor : this.dataProcessors) {
-                    if (dataProcessor.supports(shape)) {
-                        dataProcessor.process(shape, this.dataSource);
-                        break;
+                    if(shape instanceof XSLFGroupShape) {
+                        List<XSLFShape> children = getAllShapeInsideGroup(shape);
+                        for(XSLFShape child:children){
+                            if (dataProcessor.supports(child)) {
+                                dataProcessor.process(child, this.dataSource);
+                                break;
+                            }
+                        }
+                    }else{
+                        if (dataProcessor.supports(shape)) {
+                            dataProcessor.process(shape, this.dataSource);
+                            break;
+                        }
                     }
                 }
             }
         }
+    }
+
+    private List<XSLFShape> getAllShapeInsideGroup(XSLFShape root) {
+        List<XSLFShape> children = new ArrayList<>();
+        if (root == null) return children;
+
+        Deque<XSLFShape> stack = new ArrayDeque<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            XSLFShape node = stack.pop();
+            if(node instanceof XSLFGroupShape){
+                stack.addAll(((XSLFGroupShape) node).getShapes());
+            }else{
+                children.add(node);
+            }
+        }
+        return children;
     }
 
     private static String getTextFromNotes(XSLFSlide slide) {
