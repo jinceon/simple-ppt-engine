@@ -13,6 +13,11 @@
     engine.process();
     engine.save("src/test/resources/test-text.pptx");
 ```
+## 根对象
+占位符太多的时候，可以通过设置根对象，以缩短占位符长度。  
+如`#{ #user.nickname } `可以在`可选文字`里设置`#user`为根对象，那么占位符就可以简写成`#{ nickname }`。  
+![text-根对象](../images/text-root.png)
+
 ## Tips 提示
 由于PPT文本框的文字可以设置各种各样的样式，为了保证替换占位符后的文字样式和之前一致，引擎在处理文本的时候需要更精细。  
 可能存在几种情况：
