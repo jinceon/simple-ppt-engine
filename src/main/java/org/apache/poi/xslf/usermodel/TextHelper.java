@@ -5,6 +5,8 @@ import io.gitee.jinceon.core.model.Text;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -50,27 +52,34 @@ public class TextHelper {
         for (XSLFTextParagraph paragraph : paragraphs) {
             List<XSLFTextRun> portions = paragraph.getTextRuns();
             XSLFTextRun complete = null;
+            StringBuilder completeText = new StringBuilder();
+            List<XSLFTextRun> temp = new ArrayList<>();
             for (XSLFTextRun portion : portions) {
                 String spel = portion.getRawText();
                 log.debug("spel: {}", spel);
                 if(spel.contains("#{") && spel.contains("}")){
                     complete = portion;
+                    completeText.append(portion.getRawText());
                 }else if(spel.contains("#{")){
                     complete = portion;
+                    completeText.append(portion.getRawText());
                     continue;
                 }else if(complete != null && spel.contains("}")){
                     complete.setText(complete.getRawText() + portion.getRawText());
-                    portion.setText("");
+                    completeText.append(portion.getRawText());
+                    temp.add(portion);
                 }else if(complete != null){
-                    complete.setText(complete.getRawText() + portion.getRawText());
-                    portion.setText("");
+                    completeText.append(portion.getRawText());
+                    temp.add(portion);
                     continue;
                 }else{
                     continue;
                 }
-
-                Object text = parser.parseExpression(complete.getRawText(), new TemplateParserContext()).getValue(dataSource.getEvaluationContext(), rootObject);
-                log.debug("spel: {}, text: {}", complete.getRawText(), text);
+                for(XSLFTextRun t:temp){
+                    t.setText("");
+                }
+                Object text = parser.parseExpression(completeText.toString(), new TemplateParserContext()).getValue(dataSource.getEvaluationContext(), rootObject);
+                log.debug("spel: {}, text: {}", completeText, text);
                 if(text instanceof Text){
                     Text txt = (Text)text;
                     complete.setText(txt.getText());
