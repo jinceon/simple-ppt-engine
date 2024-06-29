@@ -71,14 +71,14 @@ public class TextHelper {
 
                 Object text = parser.parseExpression(complete.getRawText(), new TemplateParserContext()).getValue(dataSource.getEvaluationContext(), rootObject);
                 log.debug("spel: {}, text: {}", complete.getRawText(), text);
-                if(text instanceof String){
-                    complete.setText((String) text);
-                }else if(text instanceof Text){
+                if(text instanceof Text){
                     Text txt = (Text)text;
                     complete.setText(txt.getText());
                     if(txt.getCustomizeFunction() != null){
                         txt.getCustomizeFunction().accept(complete);
                     }
+                }else{
+                    complete.setText(String.valueOf(text));
                 }
                 complete = null;
             }
