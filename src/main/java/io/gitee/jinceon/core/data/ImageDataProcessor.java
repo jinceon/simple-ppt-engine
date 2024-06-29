@@ -4,9 +4,8 @@ import io.gitee.jinceon.core.DataSource;
 import io.gitee.jinceon.core.Order;
 import io.gitee.jinceon.core.model.Image;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.xslf.usermodel.ShapeHelper;
-import org.apache.poi.xslf.usermodel.XSLFPictureShape;
-import org.apache.poi.xslf.usermodel.XSLFShape;
+import org.apache.poi.sl.usermodel.PictureData;
+import org.apache.poi.xslf.usermodel.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
@@ -36,11 +35,10 @@ public class ImageDataProcessor implements DataProcessor {
         if(picture instanceof byte[]){
             byte[] pic = (byte[])picture;
             log.debug("spel: {}, picture: {}", spel, pic.length);
-            try {
-                iPicture.getPictureData().setData(pic);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            // PictureType先写死jpeg，好像结果没什么区别
+            XSLFPictureData pictureData = shape.getSheet().getSlideShow().addPicture(pic, PictureData.PictureType.JPEG);
+            iPicture.setSvgImage(pictureData);
+            ImageHelper.fixImage(iPicture, pictureData);
         }else if(picture instanceof Image){
             Image pic = (Image) picture;
             try {

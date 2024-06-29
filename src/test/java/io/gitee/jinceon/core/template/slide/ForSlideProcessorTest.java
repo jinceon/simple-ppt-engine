@@ -8,6 +8,9 @@ import io.gitee.jinceon.processor.data.AgeCount;
 import io.gitee.jinceon.processor.data.Trend;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 class ForSlideProcessorTest {
@@ -18,13 +21,21 @@ class ForSlideProcessorTest {
         dataSource.setVariable("users1", null);
         dataSource.setVariable("users2", new ArrayList<>());
         List pages = new ArrayList();
-        for(int i=0;i<4;i++){
+
+        for(int i=0;i<3;i++){
             Chart chart = createChart();
             Table table = createTable();
             Map page = new HashMap<>();
             page.put("page", i+1);
             page.put("chart", chart);
             page.put("table", table);
+            try {
+                byte[] jpg = Files.readAllBytes(Paths.get("src/test/resources/image-"+i+".png"));
+                page.put("img", jpg);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             pages.add(page);
         }
         // 支持list和array
