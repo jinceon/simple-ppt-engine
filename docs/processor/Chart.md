@@ -2,7 +2,15 @@
 ## Requirements 前置条件
 [Data和UI绑定](../BindData.md)
 
-## Caution 特别注意
+
+## Caution 破坏性更新
+[1.9.0]版本有一个破坏性变更。  
+在1.9.0之前图表是支持自动扩大的。但是出于实际使用的体验来说，去掉了这个特性，以支持样式继承和组合图表。  
+建议在模板里设置图表示例的时候，多设置几个系列。因为不能扩大，但是可以缩。
+![break change](../images/chart-break-change.png)
+
+
+## Tips 特别提示
 ![chart](../images/chart.png)
 `A2:A5`是categories，`B1:D1`是series。  
 `B2:D5`才是data部分（上图马克笔标记部分）

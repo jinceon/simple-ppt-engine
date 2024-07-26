@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xddf.usermodel.chart.XDDFChartData;
-import org.apache.poi.xddf.usermodel.chart.XDDFDataSource;
-import org.apache.poi.xddf.usermodel.chart.XDDFDataSourcesFactory;
-import org.apache.poi.xddf.usermodel.chart.XDDFNumericalDataSource;
+import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xslf.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -21,6 +18,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Order(70)
@@ -49,11 +47,6 @@ public class ChartDataProcessor implements DataProcessor {
         Chart chart = (Chart) parser.parseExpression(spel).getValue(dataSource.getEvaluationContext());
         log.debug("spel: {}, chart: {}", spel, chart);
         if(chart == null){
-            return;
-        }
-        List<XDDFChartData> chartSeries = iChart.getChartSeries();
-        if(chartSeries.size() > 1){
-            log.warn("暂不支持组合图表");
             return;
         }
         XSSFWorkbook chartDataWorkbook = null;
@@ -103,29 +96,54 @@ public class ChartDataProcessor implements DataProcessor {
         if(debug) {
             log.debug(MatrixUtil.visual(matrix));
         }
-        XDDFChartData chartData = iChart.getChartSeries().get(0);//暂不支持复合图表
-        int seriesCount = chartData.getSeriesCount();
-        for(int i=0;i<seriesCount;i++){
-            chartData.removeSeries(0);//清空模板里原有的旧数据
+        // 自动缩容。组合图表缩且只缩最后一个
+        autoScale(chart, iChart);
+
+        for(XDDFChartData chartData: iChart.getChartSeries()) {
+            XDDFDataSource<String> cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
+                    new CellRangeAddress(1, categories.length, 0, 0));
+            log.debug("category range: {}", cat2.getDataRangeReference());
+            int minSeries = Math.min(chartData.getSeriesCount(), series.length);
+            for(int i=0;i<minSeries;i++){
+                XDDFChartData.Series iSeries = chartData.getSeries(i);
+                XDDFNumericalDataSource<Double> val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
+                        new CellRangeAddress(1, categories.length, i + 1, i + 1));
+                log.debug("series {} range: {}", series[i].getLabel(), val2.getDataRangeReference());
+                iSeries.setTitle(series[i].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(i + 1)));
+                iSeries.replaceData(cat2, val2);
+            }
+            iChart.plot(chartData);
+            try {
+                log.debug("after plot range: {}", iChart.getWorkbook().getSheetAt(workSheetIndex).getDimension().formatAsString());
+            } catch (IOException | InvalidFormatException e) {
+                throw new RuntimeException(e);
+            }
+            if (chart.getCustomizeFunction() != null) {
+                chart.getCustomizeFunction().accept(iChart);
+            }
         }
-        XDDFDataSource<String> cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
-                new CellRangeAddress(1, categories.length, 0, 0));
-        log.debug("category range: {}", cat2.getDataRangeReference());
-        for(int s=0; s< series.length; s++) {
-            XDDFNumericalDataSource<Double> val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                    new CellRangeAddress(1, categories.length, s+1, s+1));
-            log.debug("series {} range: {}", s, val2.getDataRangeReference());
-            XDDFChartData.Series series1 = chartData.addSeries(cat2, val2);
-            series1.setTitle(series[s].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(s+1)));
+    }
+
+    /**
+     * 自动缩容
+     * @param chart
+     * @param iChart
+     */
+    private static void autoScale(Chart chart, XSLFChart iChart) {
+        int seriesCountOfData = chart.getSeries().length;
+        int seriesCountOfUI = 0;
+        List<XDDFChartData> chartDatas = iChart.getChartSeries();
+        for(XDDFChartData chartData: chartDatas) {
+            seriesCountOfUI += chartData.getSeriesCount();
         }
-        iChart.plot(chartData);
-        try {
-            log.debug("after plot range: {}", iChart.getWorkbook().getSheetAt(workSheetIndex).getDimension().formatAsString());
-        } catch (IOException | InvalidFormatException e) {
-            throw new RuntimeException(e);
-        }
-        if(chart.getCustomizeFunction() != null){
-            chart.getCustomizeFunction().accept(iChart);
+        for (int i = 0; i < seriesCountOfUI - seriesCountOfData; i++) {
+            for(int j=chartDatas.size();j>0;j--) {
+                int count = chartDatas.get(j-1).getSeriesCount();
+                if(count > 0){
+                    chartDatas.get(j-1).removeSeries(count-1);
+                    break;//跳出内，继续外
+                }
+            }
         }
     }
 
