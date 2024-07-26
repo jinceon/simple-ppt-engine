@@ -35,7 +35,7 @@ class ChartDataProcessorTest {
     Chart pieChart() {
         List<AgeCount> counts = new ArrayList<>();
         Random random = new Random();
-        for(int i=0;i<10;i++){
+        for(int i=0;i<6;i++){
             counts.add(new AgeCount("age "+(i*10)+"-"+(i+1)*10, random.nextInt(100)));
         }
         Pair[] series = new Pair[]{
