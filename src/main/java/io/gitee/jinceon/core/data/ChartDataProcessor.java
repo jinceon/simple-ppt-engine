@@ -99,6 +99,7 @@ public class ChartDataProcessor implements DataProcessor {
         // 自动缩容。组合图表缩且只缩最后一个
         autoScale(chart, iChart);
 
+        int lastColIndex = 0;
         for(XDDFChartData chartData: iChart.getChartSeries()) {
             XDDFDataSource<String> cat2 = XDDFDataSourcesFactory.fromStringCellRange(sheet,
                     new CellRangeAddress(1, categories.length, 0, 0));
@@ -107,10 +108,11 @@ public class ChartDataProcessor implements DataProcessor {
             for(int i=0;i<minSeries;i++){
                 XDDFChartData.Series iSeries = chartData.getSeries(i);
                 XDDFNumericalDataSource<Double> val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                        new CellRangeAddress(1, categories.length, i + 1, i + 1));
-                log.debug("series {} range: {}", series[i].getLabel(), val2.getDataRangeReference());
-                iSeries.setTitle(series[i].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(i + 1)));
+                        new CellRangeAddress(1, categories.length, lastColIndex + 1, lastColIndex + 1));
+                log.debug("series {} range: {}", series[lastColIndex].getLabel(), val2.getDataRangeReference());
+                iSeries.setTitle(series[i].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(lastColIndex + 1)));
                 iSeries.replaceData(cat2, val2);
+                lastColIndex++;
             }
             iChart.plot(chartData);
             try {
