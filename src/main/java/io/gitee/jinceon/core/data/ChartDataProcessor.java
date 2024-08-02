@@ -90,7 +90,9 @@ public class ChartDataProcessor implements DataProcessor {
         for (int row = 0; row < categories.length; row++) {
             for (int col = 0; col < series.length; col++) {
                 sheet.getRow(row+1).getCell(col+1).setCellValue(data[row][col]);
-                matrix[row+1][col+1]=data[row][col];
+                if(debug) {
+                    matrix[row + 1][col + 1] = data[row][col];
+                }
             }
         }
         if(debug) {
