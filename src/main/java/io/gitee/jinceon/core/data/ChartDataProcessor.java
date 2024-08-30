@@ -112,7 +112,7 @@ public class ChartDataProcessor implements DataProcessor {
                 XDDFNumericalDataSource<Double> val2 = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
                         new CellRangeAddress(1, categories.length, lastColIndex + 1, lastColIndex + 1));
                 log.debug("series {} range: {}", series[lastColIndex].getLabel(), val2.getDataRangeReference());
-                iSeries.setTitle(series[i].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(lastColIndex + 1)));
+                iSeries.setTitle(series[lastColIndex].getLabel(), new CellReference(sheet.getRow(seriesRow).getCell(lastColIndex + 1)));
                 iSeries.replaceData(cat2, val2);
                 lastColIndex++;
             }

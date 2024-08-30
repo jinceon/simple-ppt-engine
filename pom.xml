@@ -6,7 +6,7 @@
 
     <groupId>io.gitee.jinceon</groupId>
     <artifactId>simple-ppt-engine</artifactId>
-    <version>1.9.2</version>
+    <version>1.9.3</version>
     <!--项目信息...-->
     <name>simple-ppt-engine</name>
     <description>easy use for pptx edit</description>
