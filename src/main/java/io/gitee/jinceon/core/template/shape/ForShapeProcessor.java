@@ -63,7 +63,8 @@ public class ForShapeProcessor implements ShapeProcessor {
         }
         while(rowDifference > 0){
             // ui - row
-            iTable.removeRow(rowDifference--);
+            iTable.removeRow(iTable.getNumberOfRows()-1);
+            rowDifference--;
             log.debug("ui行多了，删一行");
         }
         while(colDifference < 0){
@@ -74,7 +75,8 @@ public class ForShapeProcessor implements ShapeProcessor {
         }
         while(colDifference > 0){
             // ui - col
-            iTable.removeColumn(colDifference--);
+            iTable.removeColumn(iTable.getNumberOfColumns()-1);
+            colDifference--;
             log.debug("ui列多了，删一列");
         }
         // 把`可选文字`里的 `#for = #table` 里的指令部分 `#for = `去掉。
