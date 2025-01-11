@@ -90,6 +90,7 @@ public class TextHelper {
                     complete.setText(String.valueOf(text));
                 }
                 complete = null;
+                completeText.delete(0, completeText.length());
             }
         }
     }
