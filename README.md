@@ -3,6 +3,8 @@ named it `simple-ppt-engine` doesnot mean itself is a simple engine,
 but hope the way you use it is simple.  
 之所以取名“简便PPT引擎”，不是想说它本身很简单，而是希望你使用它的方式非常简便。
 
+**主要在WPS上测试，部分文件用Office打开可能存在问题，目前暂无计划支持Office，敬请知悉。** 
+
 ## 创作背景
 部门有很多定期的汇报，月报甚至周报，PPT是固定模板，每周（月）固定取数填充。   
 一开始团队里的成员是写了一个工具类，里面包含一大堆工具方法，如replaceText(shape, map)（思路大概就是ppt模板里用${abc}设置一个占位符，然后从map里取abc来替换掉ppt模板里的文本）。   
